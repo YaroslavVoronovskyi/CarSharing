@@ -3,19 +3,19 @@ package carsharing.processors.impl.app;
 import carsharing.ConsoleReader;
 import carsharing.Constants;
 import carsharing.model.Customer;
-import carsharing.processors.ICustomerProcessors;
+import carsharing.processors.ICustomerProcessor;
 import carsharing.processors.ICustomerProcessorsFactory;
 import carsharing.processors.IAppActionProcessor;
 import carsharing.service.ICustomerService;
 
 import java.util.List;
 
-public class CustomerProcessor implements IAppActionProcessor {
+public class LoginAsCustomerProcessor implements IAppActionProcessor {
 
     private final ICustomerService customerService;
     private final ICustomerProcessorsFactory customerProcessorsFactory;
 
-    public CustomerProcessor(ICustomerService customerService, ICustomerProcessorsFactory customerProcessorsFactory) {
+    public LoginAsCustomerProcessor(ICustomerService customerService, ICustomerProcessorsFactory customerProcessorsFactory) {
         this.customerService = customerService;
         this.customerProcessorsFactory = customerProcessorsFactory;
     }
@@ -40,24 +40,22 @@ public class CustomerProcessor implements IAppActionProcessor {
         if (customerId == 0) {
             return true;
         }
-
+        Customer customer = customersList.get(customerId - 1);
         boolean needContinue = true;
         while (needContinue) {
-            Customer customer = customersList.get(customerId - 1);
             String customerActionTitle = ConsoleReader.getStringFromConsole(
-                    Constants.QUOT + customer.getName() + Constants.QUOT_WITH_COLON + Constants.CUSTOMER_PROCESSOR_MENU_MESSAGE);
-            ICustomerProcessors customerProcessors = null;
-            while (customerProcessors == null) {
-                customerProcessors = customerProcessorsFactory.getCustomerProcessorByAction(customerActionTitle);
-                if (customerProcessors == null) {
+                    Constants.QUOTE + customer.getName() + Constants.QUOTE_WITH_COLON + Constants.CUSTOMER_PROCESSOR_MENU_MESSAGE);
+            ICustomerProcessor customerProcessor = null;
+            while (customerProcessor == null) {
+                customerProcessor = customerProcessorsFactory.getCustomerProcessorByAction(customerActionTitle);
+                if (customerProcessor == null) {
                     System.out.println(Constants.WRONG_TITLE_ERROR);
-                    System.out.println(Constants.QUOT + customer.getName() + Constants.QUOT_WITH_COLON
+                    System.out.println(Constants.QUOTE + customer.getName() + Constants.QUOTE_WITH_COLON
                             + Constants.CUSTOMER_PROCESSOR_MENU_MESSAGE);
                     customerActionTitle = ConsoleReader.getStringFromConsole(Constants.CORRECT_TITLE_MESSAGE);
                 }
             }
-            customerProcessorsFactory.getCustomerProcessorByAction(customerActionTitle);
-            needContinue = customerProcessors.doActionWithCustomer(customer.getId());
+            needContinue = customerProcessor.doActionWithCustomer(customer);
         }
         return true;
     }

@@ -4,13 +4,8 @@ import carsharing.model.Car;
 
 import java.util.List;
 
-public interface ICarDao {
-
-    Car getById(int id);
+public interface ICarDao extends IAbstractDao<Car> {
 
     List<Car> getAllCarsByCompanyId(int companyId);
 
-    void save(Car car);
-
-    void update(Car car);
 }

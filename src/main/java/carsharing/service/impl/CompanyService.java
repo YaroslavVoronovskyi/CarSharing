@@ -8,7 +8,7 @@ import java.util.List;
 
 public class CompanyService implements ICompanyService {
 
-    private final ICompanyDao companyDao;
+    public final ICompanyDao companyDao;
 
     public CompanyService(ICompanyDao companyDao) {
         this.companyDao = companyDao;

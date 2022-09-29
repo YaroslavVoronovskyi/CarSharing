@@ -1,8 +1,8 @@
 package carsharing.processors.impl.company;
 
-import carsharing.processors.ICompanyProcessors;
+import carsharing.processors.ICompanyProcessor;
 
-public class BackFromCompanyMenuToPreviousMenuProcessor implements ICompanyProcessors {
+public class BackFromCompanyMenuToPreviousMenuProcessor implements ICompanyProcessor {
     @Override
     public boolean doActionWithCompany() {
         return false;

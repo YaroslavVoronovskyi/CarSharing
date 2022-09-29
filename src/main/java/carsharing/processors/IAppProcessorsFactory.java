@@ -1,6 +1,6 @@
 package carsharing.processors;
 
-public interface IAppProcessorFactory {
+public interface IAppProcessorsFactory {
 
     IAppActionProcessor getProcessorByAction(String actionTitle);
 }

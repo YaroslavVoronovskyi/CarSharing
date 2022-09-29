@@ -2,12 +2,12 @@ package carsharing.processors.impl.car;
 
 import carsharing.Constants;
 import carsharing.model.Car;
-import carsharing.processors.ICarProcessors;
+import carsharing.processors.ICarProcessor;
 import carsharing.service.ICarService;
 
 import java.util.List;
 
-public class ShowCarsListProcessor implements ICarProcessors {
+public class ShowCarsListProcessor implements ICarProcessor {
 
     private final ICarService carService;
 
@@ -25,10 +25,6 @@ public class ShowCarsListProcessor implements ICarProcessors {
 
         int index = 0;
         for (Car car : carsList) {
-            if (companyId != car.getCompanyId()) {
-                System.out.println(Constants.CARS_LIST_EMPTY_MESSAGE);
-                return true;
-            }
             index++;
             System.out.println(index + Constants.DOT_SEPARATOR + car.getName());
         }

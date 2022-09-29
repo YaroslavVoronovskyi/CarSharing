@@ -1,6 +1,6 @@
 package carsharing.processors.impl.customer;
 
-import carsharing.processors.ICustomerProcessors;
+import carsharing.processors.ICustomerProcessor;
 import carsharing.processors.ICustomerProcessorsFactory;
 
 import java.util.List;
@@ -10,15 +10,15 @@ import java.util.stream.Collectors;
 
 public class CustomerProcessorsFactory implements ICustomerProcessorsFactory {
 
-    private final Map<String, ICustomerProcessors> customerProcessorsMap;
+    private final Map<String, ICustomerProcessor> customerProcessorsMap;
 
-    public CustomerProcessorsFactory(List<ICustomerProcessors> customerProcessorsList) {
+    public CustomerProcessorsFactory(List<ICustomerProcessor> customerProcessorsList) {
         customerProcessorsMap = customerProcessorsList.stream()
-                .collect(Collectors.toMap(ICustomerProcessors::getSupportedCustomerActionTitle, Function.identity()));
+                .collect(Collectors.toMap(ICustomerProcessor::getSupportedCustomerActionTitle, Function.identity()));
     }
 
     @Override
-    public ICustomerProcessors getCustomerProcessorByAction(String customerActionTitle) {
+    public ICustomerProcessor getCustomerProcessorByAction(String customerActionTitle) {
         return customerProcessorsMap.get(customerActionTitle);
     }
 }

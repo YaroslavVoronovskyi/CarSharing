@@ -1,7 +1,7 @@
 package carsharing.service.impl;
 
-import carsharing.model.Customer;
 import carsharing.dao.ICustomerDao;
+import carsharing.model.Customer;
 import carsharing.service.ICustomerService;
 
 import java.util.List;
@@ -32,10 +32,5 @@ public class CustomerService implements ICustomerService {
     @Override
     public void update(Customer customer) {
         customerDao.update(customer);
-    }
-
-    @Override
-    public void updateCustomerLeftRentedCar(Customer customer) {
-        customerDao.updateCustomerLeftRentedCar(customer);
     }
 }

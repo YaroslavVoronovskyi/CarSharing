@@ -12,6 +12,4 @@ public interface ICustomerService {
     void save(Customer customer);
 
     void update(Customer customer);
-
-    void updateCustomerLeftRentedCar(Customer customer);
 }

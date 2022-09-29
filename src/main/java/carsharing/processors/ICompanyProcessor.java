@@ -1,6 +1,6 @@
 package carsharing.processors;
 
-public interface ICompanyProcessors {
+public interface ICompanyProcessor {
 
     boolean doActionWithCompany();
 

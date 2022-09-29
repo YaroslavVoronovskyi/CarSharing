@@ -15,8 +15,8 @@ public class Constants {
     public static final int FOURTH_COLUMN_INDEX = 4;
     public static final String DOT_SEPARATOR = ". ";
     public static final String DELIMETER = " ";
-    public static final String QUOT = "'";
-    public static final String QUOT_WITH_COLON = "' :";
+    public static final String QUOTE = "'";
+    public static final String QUOTE_WITH_COLON = "' :";
     public static final String CORRECT_TITLE_MESSAGE = "Enter the correct title";
     public static final String WRONG_NAME_FORMAT_ERROR = "Wrong name format!";
     public static final String WRONG_TITLE_ERROR = "Wrong title!";
@@ -55,14 +55,14 @@ public class Constants {
                         "    rented_car_id INT DEFAULT NULL," +
                         "    PRIMARY KEY(id)," +
                         "    CONSTRAINT customer_car_id_fkey FOREIGN KEY (rented_car_id) REFERENCES car (id));";
-        public static final String COMPANY_INSERT_QUERY = "INSERT INTO company (name) VALUES (?)";
+        public static final String COMPANY_SAVE_QUERY = "INSERT INTO company (name) VALUES (?)";
         public static final String COMPANY_GET_QUERY = "SELECT * FROM company WHERE id = ?";
         public static final String COMPANY_GET_ALL_QUERY = "SELECT * FROM company";
-        public static final String CAR_INSERT_QUERY = "INSERT INTO car (name, company_id, rented) VALUES (?, ?, ?)";
+        public static final String CAR_SAVE_QUERY = "INSERT INTO car (name, company_id, rented) VALUES (?, ?, ?)";
         public static final String CAR_GET_QUERY = "SELECT * FROM car WHERE id = ?";
         public static final String CAR_UPDATE_QUERY = "UPDATE car SET rented = ? WHERE id = ?";
         public static final String CAR_GET_ALL_QUERY_BY_COMPANY_ID = "SELECT * FROM car WHERE rented = false AND company_id = ?";
-        public static final String CUSTOMER_INSERT_QUERY = "INSERT INTO customer (name) VALUES (?)";
+        public static final String CUSTOMER_SAVE_QUERY = "INSERT INTO customer (name) VALUES (?)";
         public static final String CUSTOMER_GET_QUERY = "SELECT * FROM customer WHERE id = ?";
         public static final String CUSTOMER_GET_ALL_QUERY = "SELECT * FROM customer";
         public static final String CUSTOMER_UPDATE_QUERY = "UPDATE customer SET rented_car_id = ? WHERE id = ?";

@@ -1,11 +1,11 @@
 package carsharing.processors.impl.customer;
 
 import carsharing.model.Customer;
-import carsharing.processors.ICustomerProcessors;
+import carsharing.processors.ICustomerProcessor;
 import carsharing.service.ICarService;
 import carsharing.service.ICustomerService;
 
-public class ReturnRentedCarProcessor implements ICustomerProcessors {
+public class ReturnRentedCarProcessor implements ICustomerProcessor {
 
     private final ICustomerService customerService;
     public final ICarService carService;
@@ -16,14 +16,13 @@ public class ReturnRentedCarProcessor implements ICustomerProcessors {
     }
 
     @Override
-    public boolean doActionWithCustomer(int customerId) {
-        Customer customer = customerService.getById(customerId);
-        if (customer.getRentedCarId() <= 0) {
+    public boolean doActionWithCustomer(Customer customer) {
+        if (customer.getRentedCarId() == 0) {
             System.out.println("You didn't rent a car!");
             return true;
         }
         customer.setRentedCarId(null);
-        customerService.updateCustomerLeftRentedCar(customer);
+        customerService.update(customer);
         System.out.println("You've returned a rented car!");
         return true;
     }

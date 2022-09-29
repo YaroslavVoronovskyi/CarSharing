@@ -3,10 +3,10 @@ package carsharing.processors.impl.company;
 import carsharing.ConsoleReader;
 import carsharing.Constants;
 import carsharing.model.Company;
-import carsharing.processors.ICompanyProcessors;
+import carsharing.processors.ICompanyProcessor;
 import carsharing.service.ICompanyService;
 
-public class CreateNewCompanyProcessor implements ICompanyProcessors {
+public class CreateNewCompanyProcessor implements ICompanyProcessor {
 
     private final ICompanyService companyService;
 

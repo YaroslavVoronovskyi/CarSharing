@@ -1,10 +1,11 @@
 package carsharing.processors.impl.customer;
 
-import carsharing.processors.ICustomerProcessors;
+import carsharing.model.Customer;
+import carsharing.processors.ICustomerProcessor;
 
-public class BackFromCustomerMenuToPreviousMenuProcessor implements ICustomerProcessors {
+public class BackFromCustomerMenuToPreviousMenuProcessor implements ICustomerProcessor {
     @Override
-    public boolean doActionWithCustomer(int customerId) {
+    public boolean doActionWithCustomer(Customer customer) {
         return false;
     }
 

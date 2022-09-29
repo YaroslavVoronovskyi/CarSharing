@@ -5,14 +5,14 @@ import carsharing.Constants;
 import carsharing.model.Car;
 import carsharing.model.Company;
 import carsharing.model.Customer;
-import carsharing.processors.ICustomerProcessors;
+import carsharing.processors.ICustomerProcessor;
 import carsharing.service.ICarService;
 import carsharing.service.ICompanyService;
 import carsharing.service.ICustomerService;
 
 import java.util.List;
 
-public class RentNewCarProcessor implements ICustomerProcessors {
+public class RentNewCarProcessor implements ICustomerProcessor {
 
     private final ICompanyService companyService;
     private final ICarService carService;
@@ -25,30 +25,24 @@ public class RentNewCarProcessor implements ICustomerProcessors {
     }
 
     @Override
-    public boolean doActionWithCustomer(int customerId) {
-        List<Company> companiesList = companyService.getAll();
-        if (companiesList.size() == 0) {
-            System.out.println("You didn't rent a car!");
-            return true;
-        }
-
-        Customer customer = customerService.getById(customerId);
+    public boolean doActionWithCustomer(Customer customer) {
         if (customer.getRentedCarId() > 0) {
             System.out.println("You've already rented a car!");
             return true;
         }
 
+        List<Company> companiesList = companyService.getAll();
         System.out.println("Choose a company: ");
-        int index = 0;
+        int indexCompany = 0;
         for (Company company : companiesList) {
-            index++;
-            System.out.println(index + Constants.DOT_SEPARATOR + company.getName());
+            indexCompany++;
+            System.out.println(indexCompany + Constants.DOT_SEPARATOR + company.getName());
         }
 
-        int companyId = ConsoleReader.getIntFromConsole(index);
-        Company currentCompany = companiesList.get(companyId - 1);
+        int companyId = ConsoleReader.getIntFromConsole(indexCompany);
+        Company selectedCompany = companiesList.get(companyId - 1);
 
-        List<Car> carsList = carService.getAllCarsByCompanyId(currentCompany.getId());
+        List<Car> carsList = carService.getAllCarsByCompanyId(selectedCompany.getId());
         if (carsList.size() == 0) {
             System.out.println(Constants.CARS_LIST_EMPTY_MESSAGE);
             return true;

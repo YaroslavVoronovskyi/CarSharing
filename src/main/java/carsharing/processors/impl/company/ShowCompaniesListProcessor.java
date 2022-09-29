@@ -3,14 +3,14 @@ package carsharing.processors.impl.company;
 import carsharing.ConsoleReader;
 import carsharing.Constants;
 import carsharing.model.Company;
-import carsharing.processors.ICarProcessors;
+import carsharing.processors.ICarProcessor;
 import carsharing.processors.ICarProcessorsFactory;
-import carsharing.processors.ICompanyProcessors;
+import carsharing.processors.ICompanyProcessor;
 import carsharing.service.ICompanyService;
 
 import java.util.List;
 
-public class ShowCompaniesListProcessor implements ICompanyProcessors {
+public class ShowCompaniesListProcessor implements ICompanyProcessor {
 
     private final ICompanyService companyService;
 
@@ -41,23 +41,22 @@ public class ShowCompaniesListProcessor implements ICompanyProcessors {
         if (companyId == 0) {
             return true;
         }
+        Company company = companiesList.get(companyId - 1);
         boolean needContinue = true;
         while (needContinue) {
-            Company company = companiesList.get(companyId - 1);
-            String carActionTitle = ConsoleReader.getStringFromConsole(Constants.QUOT + company.getName() +
-                    Constants.QUOT_WITH_COLON + Constants.CAR_PROCESSOR_MENU_MESSAGE);
-            ICarProcessors carProcessors = null;
-            while (carProcessors == null) {
-                carProcessors = carProcessorsFactory.getCarProcessorByAction(carActionTitle);
-                if (carProcessors == null) {
+            String carActionTitle = ConsoleReader.getStringFromConsole(Constants.QUOTE + company.getName() +
+                    Constants.QUOTE_WITH_COLON + Constants.CAR_PROCESSOR_MENU_MESSAGE);
+            ICarProcessor carProcessor = null;
+            while (carProcessor == null) {
+                carProcessor = carProcessorsFactory.getCarProcessorByAction(carActionTitle);
+                if (carProcessor == null) {
                     System.out.println(Constants.WRONG_TITLE_ERROR);
-                    System.out.println(Constants.QUOT + company.getName() + Constants.QUOT_WITH_COLON
+                    System.out.println(Constants.QUOTE + company.getName() + Constants.QUOTE_WITH_COLON
                             + Constants.CAR_PROCESSOR_MENU_MESSAGE);
                     carActionTitle = ConsoleReader.getStringFromConsole(Constants.CORRECT_TITLE_MESSAGE);
                 }
             }
-            carProcessorsFactory.getCarProcessorByAction(carActionTitle);
-            needContinue = carProcessors.doActionWithCar(company.getId());
+            needContinue = carProcessor.doActionWithCar(company.getId());
         }
         return true;
     }
