@@ -32,7 +32,6 @@ public class ShowCustomerRentedCarProcessor implements ICustomerProcessor {
         return true;
     }
 
-
     @Override
     public String getSupportedCustomerActionTitle() {
         return "3";

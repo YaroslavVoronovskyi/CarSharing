@@ -57,11 +57,6 @@ public class CarDao extends AbstractDao<Car> implements ICarDao {
     }
 
     @Override
-    protected String getAllQuery() {
-        return Constants.Queries.CAR_GET_QUERY;
-    }
-
-    @Override
     protected String getSaveQuery() {
         return Constants.Queries.CAR_SAVE_QUERY;
     }
