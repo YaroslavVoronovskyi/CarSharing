@@ -39,8 +39,8 @@ public class RentNewCarProcessor implements ICustomerProcessor {
             System.out.println(indexCompany + Constants.DOT_SEPARATOR + company.getName());
         }
 
-        int companyId = ConsoleReader.getIntFromConsole(indexCompany);
-        Company selectedCompany = companiesList.get(companyId - 1);
+        int companyNumber = ConsoleReader.getIntFromConsole(indexCompany);
+        Company selectedCompany = companiesList.get(companyNumber - 1);
 
         List<Car> carsList = carService.getAllCarsByCompanyId(selectedCompany.getId());
         if (carsList.size() == 0) {
@@ -55,8 +55,8 @@ public class RentNewCarProcessor implements ICustomerProcessor {
             System.out.println(indexCar + Constants.DOT_SEPARATOR + car.getName());
         }
 
-        int carId = ConsoleReader.getIntFromConsole(indexCar);
-        Car car = carsList.get(carId - 1);
+        int carNumber = ConsoleReader.getIntFromConsole(indexCar);
+        Car car = carsList.get(carNumber - 1);
 
         customer.setRentedCarId(car.getId());
         car.setRented(true);

@@ -36,12 +36,12 @@ public class ShowCompaniesListProcessor implements ICompanyProcessor {
             System.out.println(index + Constants.DOT_SEPARATOR + company.getName());
         }
 
-        int companyId = ConsoleReader.getIntFromConsole(index);
+        int companyNumber = ConsoleReader.getIntFromConsole(index);
 
-        if (companyId == 0) {
+        if (companyNumber == 0) {
             return true;
         }
-        Company company = companiesList.get(companyId - 1);
+        Company company = companiesList.get(companyNumber - 1);
         boolean needContinue = true;
         while (needContinue) {
             String carActionTitle = ConsoleReader.getStringFromConsole(Constants.QUOTE + company.getName() +

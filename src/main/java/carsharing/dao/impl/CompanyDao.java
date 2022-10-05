@@ -20,9 +20,8 @@ public class CompanyDao extends AbstractDao<Company> implements ICompanyDao {
     }
 
     @Override
-    protected void createNewModel(PreparedStatement statement, Company company) throws SQLException {
-        statement.setString(Constants.FIRST_COLUMN_INDEX, company.getName());
-        statement.execute();
+    protected void fillCreateStatement(PreparedStatement statement, Company model) throws SQLException {
+        statement.setString(Constants.FIRST_COLUMN_INDEX, model.getName());
     }
 
     @Override

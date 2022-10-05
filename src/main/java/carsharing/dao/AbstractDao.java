@@ -17,8 +17,7 @@ public abstract class AbstractDao<T> implements IAbstractDao<T> {
         try (Connection connection = DataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(Constants.FIRST_COLUMN_INDEX, id);
-            ResultSet resultSet = statement.executeQuery();
-            List<T> modelsList = buildModelFromResultSet(resultSet);
+            List<T> modelsList = buildModelFromResultSet(statement);
             if (modelsList.size() == 0) {
                 return null;
             }
@@ -32,46 +31,48 @@ public abstract class AbstractDao<T> implements IAbstractDao<T> {
         String query = getAllQuery();
         try (Connection connection = DataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
-            ResultSet resultSet = statement.executeQuery();
-            return buildModelFromResultSet(resultSet);
+            return buildModelFromResultSet(statement);
         } catch (SQLException exception) {
             throw new RuntimeException("Could not get data from DB by query: " + query);
         }
     }
 
-    public void save(T t) {
+    public void save(T model) {
         String query = getSaveQuery();
         try (Connection connection = DataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
-            createNewModel(statement, t);
+            fillCreateStatement(statement, model);
+            statement.execute();
         } catch (SQLException exception) {
             throw new RuntimeException("Could not save data to DB by query: " + query);
         }
     }
 
-    public void update(T t) {
+    public void update(T model) {
         String query = getUpdateQuery();
         try (Connection connection = DataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
-            updateModel(statement, t);
+            fillUpdateStatement(statement, model);
+            statement.executeUpdate();
         } catch (SQLException exception) {
             throw new RuntimeException("Could not update data to DB by query: " + query);
         }
     }
 
-    private List<T> buildModelFromResultSet(ResultSet resultSet) throws SQLException {
+    private List<T> buildModelFromResultSet(PreparedStatement statement) throws SQLException {
         List<T> modelsList = new ArrayList<>();
+        ResultSet resultSet = statement.executeQuery();
         while (resultSet.next()) {
             modelsList.add(buildCustomModel(resultSet));
         }
         return modelsList;
     }
 
-    protected void updateModel(PreparedStatement statement, T t) throws SQLException {
+    protected void fillUpdateStatement(PreparedStatement statement, T model) throws SQLException {
         throw new UnsupportedOperationException("This method is not implemented");
     }
 
-    protected void createNewModel(PreparedStatement statement, T t) throws SQLException {
+    protected void fillCreateStatement(PreparedStatement statement, T model) throws SQLException {
         throw new UnsupportedOperationException("This method is not implemented");
     }
 

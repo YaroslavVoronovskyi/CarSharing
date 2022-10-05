@@ -6,6 +6,6 @@ public interface IAbstractDao<T> {
 
     T getById(int id);
     List<T> getAll();
-    void save(T t);
-    void update(T t);
+    void save(T model);
+    void update(T model);
 }

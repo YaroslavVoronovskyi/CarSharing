@@ -35,12 +35,12 @@ public class LoginAsCustomerProcessor implements IAppActionProcessor {
             System.out.println(index + Constants.DOT_SEPARATOR + customer.getName() + Constants.DELIMETER);
         }
 
-        int customerId = ConsoleReader.getIntFromConsole(index);
+        int customerNumber = ConsoleReader.getIntFromConsole(index);
 
-        if (customerId == 0) {
+        if (customerNumber == 0) {
             return true;
         }
-        Customer customer = customersList.get(customerId - 1);
+        Customer customer = customersList.get(customerNumber - 1);
         boolean needContinue = true;
         while (needContinue) {
             String customerActionTitle = ConsoleReader.getStringFromConsole(

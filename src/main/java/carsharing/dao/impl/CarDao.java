@@ -20,35 +20,29 @@ public class CarDao extends AbstractDao<Car> implements ICarDao {
         try (Connection connection = DataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(Constants.Queries.CAR_GET_ALL_QUERY_BY_COMPANY_ID)) {
             statement.setInt(Constants.FIRST_COLUMN_INDEX, companyId);
-            return buildCarsList(statement);
+            ResultSet resultSet = statement.executeQuery();
+            return buildCarsList(resultSet);
         } catch (SQLException exception) {
             throw new RuntimeException("Could not get cars list with company id: " + companyId);
         }
     }
 
     @Override
-    protected void createNewModel(PreparedStatement statement, Car car) throws SQLException {
-        statement.setString(Constants.FIRST_COLUMN_INDEX, car.getName());
-        statement.setInt(Constants.SECOND_COLUMN_INDEX, car.getCompanyId());
-        statement.setBoolean(Constants.THIRD_COLUMN_INDEX, car.isRented());
-        statement.execute();
+    protected void fillCreateStatement(PreparedStatement statement, Car model) throws SQLException {
+        statement.setString(Constants.FIRST_COLUMN_INDEX, model.getName());
+        statement.setInt(Constants.SECOND_COLUMN_INDEX, model.getCompanyId());
+        statement.setBoolean(Constants.THIRD_COLUMN_INDEX, model.isRented());
     }
 
     @Override
-    protected void updateModel(PreparedStatement statement, Car car) throws SQLException {
-        statement.setObject(Constants.FIRST_COLUMN_INDEX, car.isRented());
-        statement.setInt(Constants.SECOND_COLUMN_INDEX, car.getId());
-        statement.executeUpdate();
+    protected void fillUpdateStatement(PreparedStatement statement, Car model) throws SQLException {
+        statement.setObject(Constants.FIRST_COLUMN_INDEX, model.isRented());
+        statement.setInt(Constants.SECOND_COLUMN_INDEX, model.getId());
     }
 
     @Override
     protected Car buildCustomModel(ResultSet resultSet) throws SQLException {
-        Car car = new Car();
-        car.setId(resultSet.getInt(Constants.FIRST_COLUMN_INDEX));
-        car.setName(resultSet.getString(Constants.SECOND_COLUMN_INDEX));
-        car.setCompanyId(resultSet.getInt(Constants.THIRD_COLUMN_INDEX));
-        car.setRented(resultSet.getBoolean(Constants.FOURTH_COLUMN_INDEX));
-        return car;
+        return buildCar(resultSet);
     }
 
     @Override
@@ -66,17 +60,20 @@ public class CarDao extends AbstractDao<Car> implements ICarDao {
         return Constants.Queries.CAR_UPDATE_QUERY;
     }
 
-    private List<Car> buildCarsList(PreparedStatement statement) throws SQLException {
+    private List<Car> buildCarsList(ResultSet resultSet) throws SQLException {
         List<Car> carsList = new ArrayList<>();
-        ResultSet resultSet = statement.executeQuery();
         while (resultSet.next()) {
-            Car car = new Car();
-            car.setId(resultSet.getInt(Constants.FIRST_COLUMN_INDEX));
-            car.setName(resultSet.getString(Constants.SECOND_COLUMN_INDEX));
-            car.setCompanyId(resultSet.getInt(Constants.THIRD_COLUMN_INDEX));
-            car.setRented(resultSet.getBoolean(Constants.FOURTH_COLUMN_INDEX));
-            carsList.add(car);
+            carsList.add(buildCar(resultSet));
         }
         return carsList;
+    }
+
+    private Car buildCar(ResultSet resultSet) throws SQLException {
+        Car car = new Car();
+        car.setId(resultSet.getInt(Constants.FIRST_COLUMN_INDEX));
+        car.setName(resultSet.getString(Constants.SECOND_COLUMN_INDEX));
+        car.setCompanyId(resultSet.getInt(Constants.THIRD_COLUMN_INDEX));
+        car.setRented(resultSet.getBoolean(Constants.FOURTH_COLUMN_INDEX));
+        return car;
     }
 }
