@@ -1,40 +1,46 @@
 package carsharing.processors.impl.car;
 
-import carsharing.dao.ICarDao;
-import carsharing.dao.impl.CarDao;
 import carsharing.processors.ICarProcessor;
 import carsharing.processors.ICarProcessorsFactory;
-import carsharing.service.ICarService;
-import carsharing.service.impl.CarService;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class CarProcessorsFactoryTest {
 
+    @Mock
+    private ICarProcessor processorMock;
+
     @Test
-    public void shouldReturnSupportedActionTitle() {
+    public void shouldGetCarProcessorByAction() {
+        Mockito.when(processorMock.getSupportedCarActionTitle()).thenReturn("testTitle");
+        ICarProcessorsFactory processorsFactory = new CarProcessorsFactory(List.of(processorMock));
 
-        ICarDao carDao = new CarDao();
-        ICarService carService = new CarService(carDao);
+        ICarProcessor processorFromFactory = processorsFactory.getCarProcessorByAction("testTitle");
 
-        ICarProcessor showCarsListProcessor = new ShowCarsListProcessor(carService);
-        ICarProcessor createNewCarProcessor = new CreateNewCarProcessor(carService);
-        ICarProcessor backFromCarMenuToPreviousMenuProcessor = new BackFromCarMenuToPreviousMenuProcessor();
+        assertNotNull(processorFromFactory);
+        assertEquals(processorMock, processorFromFactory);
+    }
 
-        ICarProcessorsFactory carProcessorsFactory = new CarProcessorsFactory(
-                List.of(showCarsListProcessor, createNewCarProcessor, backFromCarMenuToPreviousMenuProcessor));
+    @Test
+    public void shouldReturnNullIfProcessorNotExists() {
+        Mockito.when(processorMock.getSupportedCarActionTitle()).thenReturn("testTitle");
+        ICarProcessorsFactory processorsFactory = new CarProcessorsFactory(List.of(processorMock));
 
-        assertNotNull(carProcessorsFactory.getCarProcessorByAction("0"));
-        assertNotNull(carProcessorsFactory.getCarProcessorByAction("1"));
-        assertNotNull(carProcessorsFactory.getCarProcessorByAction("2"));
+        ICarProcessor processorFromFactory = processorsFactory.getCarProcessorByAction("5");
 
-        assertNull(carProcessorsFactory.getCarProcessorByAction("3"));
-        assertNull(carProcessorsFactory.getCarProcessorByAction("4"));
-        assertNull(carProcessorsFactory.getCarProcessorByAction("5"));
-        assertNull(carProcessorsFactory.getCarProcessorByAction("6"));
+        assertNull(processorFromFactory);
     }
 }

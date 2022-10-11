@@ -33,13 +33,15 @@ public class CreateNewCustomerProcessorTest {
     }
 
     @Test
-    public void shouldAddNewCustomerProcessor() {
+    public void shouldCheckAddNewCustomerProcessor() {
         try (MockedStatic<ConsoleReader> mockStatic = Mockito.mockStatic(ConsoleReader.class)) {
             Mockito.doNothing().when(customerServiceMock).save(isA(Customer.class));
             mockStatic.when(() -> ConsoleReader.getStringFromConsole("Enter the customer name:",
                     Constants.NAME_CHECK_PATTERN, Constants.WRONG_NAME_FORMAT_ERROR)).thenReturn("Yaroslav");
+
             createNewCustomerProcessor.doAction();
-            Mockito.verify(customerServiceMock, Mockito.times(1)).save(isA(Customer.class));
+
+            Mockito.verify(customerServiceMock).save(isA(Customer.class));
             assertTrue(createNewCustomerProcessor.doAction());
         }
     }

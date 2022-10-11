@@ -18,7 +18,7 @@ public class ExitApplicationProcessorTest {
     private ExitApplicationProcessor exitApplicationProcessor;
 
     @Test
-    public void shouldExitFromApplication() {
+    public void shouldCheckExitFromApplicationProcessor() {
         assertFalse(exitApplicationProcessor.doAction());
     }
 

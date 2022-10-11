@@ -12,10 +12,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -33,56 +33,42 @@ public class CompanyServiceTest {
     }
 
     @Test
-    public void methodShouldReturnExpectedCompany() {
+    public void shouldReturnExpectedCompany() {
         Company expectedCompany = companyService.getById(1);
-        Company actualCompany = createFakeCompany();
+        Company actualCompany = createTestCompany();
         assertNotNull(expectedCompany);
         assertEquals(expectedCompany.getName(), actualCompany.getName());
     }
 
     @Test
-    public void methodShouldReturnExpectedCompaniesList() {
+    public void shouldReturnExpectedCompaniesList() {
         List<Company> expectedCompaniesList = companyService.getAll();
-        List<Company> actualCompaniesList = createFakeCompaniesList();
+        List<Company> actualCompaniesList = List.of(createTestCompany());
         assertNotNull(expectedCompaniesList);
-        assertEquals(expectedCompaniesList.size(), 3);
+        assertEquals(expectedCompaniesList.size(), 1);
         assertEquals(expectedCompaniesList.get(0).getId(), actualCompaniesList.get(0).getId());
         assertEquals(expectedCompaniesList.get(0).getName(), actualCompaniesList.get(0).getName());
     }
 
     @Test
-    public void methodShouldSaveCompany() {
+    public void shouldSaveCompany() {
         Company company = new Company("Avis");
         company.setId(4);
         companyService.save(company);
-        Mockito.verify(companyDaoMock, Mockito.times(1)).save(company);
+        Mockito.verify(companyDaoMock).save(company);
     }
 
     private void initMocksForCompanies() {
-        Mockito.when(companyDaoMock.getAll()).thenReturn(createFakeCompaniesList());
+        Mockito.when(companyDaoMock.getAll()).thenReturn(List.of(createTestCompany()));
     }
 
     private void initMocksForCompany() {
-        Mockito.when(companyDaoMock.getById(1)).thenReturn(createFakeCompany());
+        Mockito.when(companyDaoMock.getById(1)).thenReturn(createTestCompany());
     }
 
-    private Company createFakeCompany() {
+    private Company createTestCompany() {
         Company company = new Company("SIXT");
         company.setId(1);
         return company;
-    }
-
-    private List<Company> createFakeCompaniesList() {
-        List<Company> companiesList = new ArrayList<>();
-
-        Company firstCompany = new Company("SIXT");
-        Company secondCompany = new Company("OkCar");
-        Company thirdCompany = new Company("EuropeCar");
-
-        companiesList.add(firstCompany);
-        companiesList.add(secondCompany);
-        companiesList.add(thirdCompany);
-
-        return companiesList;
     }
 }

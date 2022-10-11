@@ -40,19 +40,21 @@ public class ShowCompaniesListProcessorTest {
     }
 
     @Test
-    public void shouldShowCompaniesList() {
+    public void shouldCheckShowCompaniesListProcessor() {
         try (MockedStatic<ConsoleReader> mockStatic = Mockito.mockStatic(ConsoleReader.class)) {
-            Mockito.when(companyServiceMock.getAll()).thenReturn(createFakeCompaniesList());
+            Mockito.when(companyServiceMock.getAll()).thenReturn(List.of(createTestCompany()));
             Mockito.when(carProcessorsFactoryMock.getCarProcessorByAction("1")).thenReturn(carProcessorMock);
-            Company company = createFakeCompany();
-            mockStatic.when(() -> ConsoleReader.getIntFromConsole(3)).thenReturn(1);
+            Company company = createTestCompany();
+            mockStatic.when(() -> ConsoleReader.getIntFromConsole(1)).thenReturn(1);
+            mockStatic.when(() -> ConsoleReader.getStringFromConsole(Constants.CORRECT_TITLE_MESSAGE)).thenReturn("1");
             mockStatic.when(() -> ConsoleReader.getStringFromConsole(Constants.QUOTE + company.getName() +
-                    Constants.QUOTE_WITH_COLON + Constants.CAR_PROCESSOR_MENU_MESSAGE)).thenReturn("1");
+                    Constants.QUOTE_WITH_COLON + Constants.CAR_PROCESSOR_MENU_MESSAGE)).thenReturn("7");
 
             showCompaniesListProcessor.doActionWithCompany();
 
-            Mockito.verify(companyServiceMock, Mockito.times(1)).getAll();
-            Mockito.verify(carProcessorsFactoryMock, Mockito.times(1)).getCarProcessorByAction("1");
+            Mockito.verify(companyServiceMock).getAll();
+            Mockito.verify(carProcessorMock).doActionWithCar(1);
+            Mockito.verify(carProcessorsFactoryMock).getCarProcessorByAction("1");
         }
     }
 
@@ -60,29 +62,12 @@ public class ShowCompaniesListProcessorTest {
     public void shouldShowMessageThatCompaniesListIsEmpty() {
         Mockito.when(companyServiceMock.getAll()).thenReturn(new ArrayList<>());
         showCompaniesListProcessor.doActionWithCompany();
-        Mockito.verify(companyServiceMock, Mockito.times(1)).getAll();
+        Mockito.verify(companyServiceMock).getAll();
     }
 
-    private Company createFakeCompany() {
+    private Company createTestCompany() {
         Company company = new Company("SIXT");
         company.setId(1);
         return company;
-    }
-
-    private List<Company> createFakeCompaniesList() {
-        List<Company> companiesList = new ArrayList<>();
-
-        Company firstCompany = new Company("SIXT");
-        firstCompany.setId(1);
-        Company secondCompany = new Company("OkCar");
-        secondCompany.setId(2);
-        Company thirdCompany = new Company("EuropeCar");
-        thirdCompany.setId(3);
-
-        companiesList.add(firstCompany);
-        companiesList.add(secondCompany);
-        companiesList.add(thirdCompany);
-
-        return companiesList;
     }
 }

@@ -33,44 +33,48 @@ public class ShowCustomerRentedCarProcessorTest {
     }
 
     @Test
-    public void shouldShowCustomerWithCompanyAndCar() {
-        Mockito.when(carServiceMock.getById(1)).thenReturn(createFakeCar());
-        Mockito.when(companyServiceMock.getById(1)).thenReturn(createFakeCompany());
-        showCustomerRentedCarProcessor.doActionWithCustomer(createFakeCustomer());
-        Mockito.verify(carServiceMock, Mockito.times(1)).getById(1);
-        Mockito.verify(companyServiceMock, Mockito.times(1)).getById(1);
+    public void shouldCheckShowCustomerRentedCarProcessor() {
+        Mockito.when(carServiceMock.getById(1)).thenReturn(createTestCar());
+        Mockito.when(companyServiceMock.getById(1)).thenReturn(createTestCompany());
+
+        showCustomerRentedCarProcessor.doActionWithCustomer(createTestCustomer());
+
+        Mockito.verify(carServiceMock).getById(1);
+        Mockito.verify(companyServiceMock).getById(1);
     }
 
     @Test
     public void shouldShowMassageThatCustomerDidNotRentCar() {
-        Mockito.when(carServiceMock.getById(1)).thenReturn(createFakeCar());
-        Mockito.when(companyServiceMock.getById(1)).thenReturn(createFakeCompany());
-        showCustomerRentedCarProcessor.doActionWithCustomer(createFakeCustomerWithoutCar());
+        Mockito.when(carServiceMock.getById(1)).thenReturn(createTestCar());
+        Mockito.when(companyServiceMock.getById(1)).thenReturn(createTestCompany());
+
+        showCustomerRentedCarProcessor.doActionWithCustomer(createTestCustomerWithoutCar());
+
         Mockito.verify(carServiceMock, Mockito.times(0)).getById(1);
         Mockito.verify(companyServiceMock, Mockito.times(0)).getById(1);
     }
 
-    private Customer createFakeCustomer() {
+    private Customer createTestCustomer() {
         Customer customer = new Customer("Yaroslav");
         customer.setId(1);
         customer.setRentedCarId(1);
         return customer;
     }
 
-    private Customer createFakeCustomerWithoutCar() {
+    private Customer createTestCustomerWithoutCar() {
         Customer customer = new Customer("Yaroslav");
         customer.setId(1);
         customer.setRentedCarId(0);
         return customer;
     }
 
-    private Car createFakeCar() {
+    private Car createTestCar() {
         Car car = new Car("BWM", 1);
         car.setId(1);
         return car;
     }
 
-    private Company createFakeCompany() {
+    private Company createTestCompany() {
         Company company = new Company("SIXT");
         company.setId(1);
         return company;

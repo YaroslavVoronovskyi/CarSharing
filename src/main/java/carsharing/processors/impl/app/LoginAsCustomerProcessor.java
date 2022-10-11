@@ -37,9 +37,6 @@ public class LoginAsCustomerProcessor implements IAppActionProcessor {
 
         int customerNumber = ConsoleReader.getIntFromConsole(index);
 
-        if (customerNumber == 0) {
-            return true;
-        }
         Customer customer = customersList.get(customerNumber - 1);
         boolean needContinue = true;
         while (needContinue) {

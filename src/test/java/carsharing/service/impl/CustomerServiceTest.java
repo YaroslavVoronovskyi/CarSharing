@@ -12,7 +12,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -34,64 +33,50 @@ public class CustomerServiceTest {
     }
 
     @Test
-    public void methodShouldReturnExpectedCustomer() {
+    public void shouldReturnExpectedCustomer() {
         Customer expectedCustomer = customerService.getById(1);
-        Customer actualCustomer = createFakeCustomer();
+        Customer actualCustomer = createTestCustomer();
         assertNotNull(expectedCustomer);
         assertEquals(expectedCustomer.getName(), actualCustomer.getName());
     }
 
     @Test
-    public void methodShouldReturnExpectedCustomersList() {
+    public void shouldReturnExpectedCustomersList() {
         List<Customer> expectedCustomersList = customerService.getAll();
-        List<Customer> actualCustomersList = createFakeCustomersList();
+        List<Customer> actualCustomersList = List.of(createTestCustomer());
         assertNotNull(expectedCustomersList);
-        assertEquals(expectedCustomersList.size(), 3);
+        assertEquals(expectedCustomersList.size(), 1);
         assertEquals(expectedCustomersList.get(0).getId(), actualCustomersList.get(0).getId());
         assertEquals(expectedCustomersList.get(0).getName(), actualCustomersList.get(0).getName());
     }
 
     @Test
-    public void methodShouldSaveCustomer() {
+    public void shouldSaveCustomer() {
         Customer customer = new Customer("Bill");
         customerService.save(customer);
-        Mockito.verify(customerDaoMock, Mockito.times(1)).save(customer);
+        Mockito.verify(customerDaoMock).save(customer);
     }
 
     @Test
-    public void methodShouldUpdateCustomer() {
+    public void shouldUpdateCustomer() {
         Customer customer = customerService.getById(1);
         customer.setRentedCarId(1);
         customerService.update(customer);
-        Mockito.verify(customerDaoMock, Mockito.times(1)).update(customer);
+        Mockito.verify(customerDaoMock).update(customer);
     }
 
     private void initMocksForCustomer() {
-        Mockito.when(customerDaoMock.getById(1)).thenReturn(createFakeCustomer());
+        Mockito.when(customerDaoMock.getById(1)).thenReturn(createTestCustomer());
     }
 
     private void initMocksForCustomers() {
-        Mockito.when(customerDaoMock.getAll()).thenReturn(createFakeCustomersList());
+        Mockito.when(customerDaoMock.getAll()).thenReturn(List.of(createTestCustomer()));
 
     }
 
-    private Customer createFakeCustomer() {
+    private Customer createTestCustomer() {
         Customer customer = new Customer("Yaroslav");
         customer.setId(1);
         return customer;
-    }
-
-    private List<Customer> createFakeCustomersList() {
-        List<Customer> customersList = new ArrayList<>();
-
-        Customer firstCustomer = new Customer("Yaroslav");
-        Customer secondCustomer = new Customer("Piter");
-        Customer thirdCustomer = new Customer("Boris");
-
-        customersList.add(firstCustomer);
-        customersList.add(secondCustomer);
-        customersList.add(thirdCustomer);
-
-        return customersList;
     }
 }

@@ -27,7 +27,7 @@ public class CustomerDao extends AbstractDao<Customer> implements ICustomerDao {
 
     @Override
     protected void fillUpdateStatement(PreparedStatement statement, Customer model) throws SQLException {
-        statement.setObject(Constants.FIRST_COLUMN_INDEX, model.getRentedCarId());
+        statement.setInt(Constants.FIRST_COLUMN_INDEX, model.getRentedCarId());
         statement.setInt(Constants.SECOND_COLUMN_INDEX, model.getId());
     }
 

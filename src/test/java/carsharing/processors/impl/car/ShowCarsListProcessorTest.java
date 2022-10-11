@@ -31,30 +31,20 @@ public class ShowCarsListProcessorTest {
     }
 
     @Test
-    public void shouldShowCarsList() {
-        Mockito.when(carServiceMock.getAllCarsByCompanyId(1)).thenReturn(createFakeCarsList());
+    public void shouldCheckShowCarsListProcessor() {
+        Mockito.when(carServiceMock.getAllCarsByCompanyId(1)).thenReturn(List.of(createTestCarsList()));
         showCarsListProcessor.doActionWithCar(1);
-        Mockito.verify(carServiceMock, Mockito.times(1)).getAllCarsByCompanyId(1);
+        Mockito.verify(carServiceMock).getAllCarsByCompanyId(1);
     }
 
     @Test
     public void shouldShowMessageThatListEmpty() {
         Mockito.when(carServiceMock.getAllCarsByCompanyId(1)).thenReturn(new ArrayList<>());
         showCarsListProcessor.doActionWithCar(1);
-        Mockito.verify(carServiceMock, Mockito.times(1)).getAllCarsByCompanyId(1);
+        Mockito.verify(carServiceMock).getAllCarsByCompanyId(1);
     }
 
-    private List<Car> createFakeCarsList() {
-        List<Car> carsList = new ArrayList<>();
-
-        Car firstCar = new Car("BWM", 1);
-        Car secondCar = new Car("Audi", 1);
-        Car thirdCar = new Car("Toyota", 1);
-
-        carsList.add(firstCar);
-        carsList.add(secondCar);
-        carsList.add(thirdCar);
-
-        return carsList;
+    private Car createTestCarsList() {
+        return new Car("BWM", 1);
     }
 }

@@ -18,7 +18,7 @@ public class BackFromCarMenuToPreviousMenuProcessorTest {
     private BackFromCarMenuToPreviousMenuProcessor backFromCarMenuToPreviousMenuProcessor;
 
     @Test
-    public void shouldBackToPreviousMenu() {
+    public void shouldCheckBackToPreviousMenuProcessor() {
         assertFalse(backFromCarMenuToPreviousMenuProcessor.doActionWithCar(1));
     }
 

@@ -2,17 +2,14 @@ package carsharing.processors.impl.customer;
 
 import carsharing.model.Customer;
 import carsharing.processors.ICustomerProcessor;
-import carsharing.service.ICarService;
 import carsharing.service.ICustomerService;
 
 public class ReturnRentedCarProcessor implements ICustomerProcessor {
 
     private final ICustomerService customerService;
-    public final ICarService carService;
 
-    public ReturnRentedCarProcessor(ICustomerService customerService, ICarService carService) {
+    public ReturnRentedCarProcessor(ICustomerService customerService) {
         this.customerService = customerService;
-        this.carService = carService;
     }
 
     @Override

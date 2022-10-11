@@ -27,10 +27,16 @@ public class CarSharingTest {
     public void shouldRunCarSharing() {
         try (MockedStatic<ConsoleReader> mockStatic = Mockito.mockStatic(ConsoleReader.class)) {
             Mockito.when(appProcessorsFactoryMock.getProcessorByAction("1")).thenReturn(appActionProcessorMock);
-            mockStatic.when(() -> ConsoleReader.getStringFromConsole(Constants.APP_PROCESSOR_MESSAGE))
+            Mockito.when(appActionProcessorMock.doAction()).thenReturn(false);
+            mockStatic.when(() -> ConsoleReader.getStringFromConsole(Constants.CORRECT_TITLE_MESSAGE))
                     .thenReturn("1");
+            mockStatic.when(() -> ConsoleReader.getStringFromConsole(Constants.APP_PROCESSOR_MESSAGE))
+                    .thenReturn("7");
+
             carSharing.runCarSharing();
-            Mockito.verify(appProcessorsFactoryMock, Mockito.times(1)).getProcessorByAction("1");
+
+            Mockito.verify(appProcessorsFactoryMock).getProcessorByAction("1");
+            Mockito.verify(appActionProcessorMock).doAction();
         }
     }
 }

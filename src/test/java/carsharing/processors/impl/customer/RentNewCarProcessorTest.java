@@ -43,22 +43,22 @@ public class RentNewCarProcessorTest {
 
     @Test
     public void shouldShowMessageThatCustomerHasAlreadyRentedCar() {
-        rentNewCarProcessor.doActionWithCustomer(createFakeCustomer());
-        assertEquals(createFakeCar().getCompanyId(), 1);
+        rentNewCarProcessor.doActionWithCustomer(createTestCustomer());
+        assertEquals(createTestCar().getCompanyId(), 1);
     }
 
     @Test
-    public void shouldCustomerRentNewCar() {
+    public void shouldCheckCustomerRentNewCarProcessor() {
         try (MockedStatic<ConsoleReader> mockStatic = Mockito.mockStatic(ConsoleReader.class)) {
-            Mockito.when(companyServiceMock.getAll()).thenReturn(createFakeCompaniesList());
-            Mockito.when(carServiceMock.getAllCarsByCompanyId(1)).thenReturn(createFakeCarsList());
-            mockStatic.when(() -> ConsoleReader.getIntFromConsole(3)).thenReturn(1);
-            Customer customer = createFakeCustomerWithoutCar();
+            Mockito.when(companyServiceMock.getAll()).thenReturn(List.of(createTestCompany()));
+            Mockito.when(carServiceMock.getAllCarsByCompanyId(1)).thenReturn(List.of(createTestCar()));
+            mockStatic.when(() -> ConsoleReader.getIntFromConsole(1)).thenReturn(1);
+            Customer customer = createTestCustomerWithoutCar();
             rentNewCarProcessor.doActionWithCustomer(customer);
 
-            Mockito.verify(companyServiceMock, Mockito.times(1)).getAll();
-            Mockito.verify(carServiceMock, Mockito.times(1)).getAllCarsByCompanyId(1);
-            Mockito.verify(customerServiceMock, Mockito.times(1)).update(customer);
+            Mockito.verify(companyServiceMock).getAll();
+            Mockito.verify(carServiceMock).getAllCarsByCompanyId(1);
+            Mockito.verify(customerServiceMock).update(customer);
 
             assertNotNull(customer.getRentedCarId());
             assertEquals(customer.getRentedCarId(), 1);
@@ -68,71 +68,44 @@ public class RentNewCarProcessorTest {
     @Test
     public void shouldShowMessageThatCarsListIsEmpty() {
         try (MockedStatic<ConsoleReader> mockStatic = Mockito.mockStatic(ConsoleReader.class)) {
-            Mockito.when(companyServiceMock.getAll()).thenReturn(createFakeCompaniesList());
+            Mockito.when(companyServiceMock.getAll()).thenReturn(List.of(createTestCompany()));
             Mockito.when(carServiceMock.getAllCarsByCompanyId(1)).thenReturn(new ArrayList<>());
-            mockStatic.when(() -> ConsoleReader.getIntFromConsole(3)).thenReturn(1);
-            Customer customer = createFakeCustomerWithoutCar();
+            mockStatic.when(() -> ConsoleReader.getIntFromConsole(1)).thenReturn(1);
+            Customer customer = createTestCustomerWithoutCar();
+
             rentNewCarProcessor.doActionWithCustomer(customer);
 
-            Mockito.verify(companyServiceMock, Mockito.times(1)).getAll();
-            Mockito.verify(carServiceMock, Mockito.times(1)).getAllCarsByCompanyId(1);
+            Mockito.verify(companyServiceMock).getAll();
+            Mockito.verify(carServiceMock).getAllCarsByCompanyId(1);
 
             assertNotNull(customer.getRentedCarId());
             assertEquals(customer.getRentedCarId(), 0);
         }
     }
 
-    private Customer createFakeCustomer() {
+    private Customer createTestCustomer() {
         Customer customer = new Customer("Yaroslav");
         customer.setId(1);
         customer.setRentedCarId(1);
         return customer;
     }
 
-    private Customer createFakeCustomerWithoutCar() {
+    private Customer createTestCustomerWithoutCar() {
         Customer customer = new Customer("Yaroslav");
         customer.setId(1);
         customer.setRentedCarId(0);
         return customer;
     }
 
-    private Car createFakeCar() {
+    private Car createTestCar() {
         Car car = new Car("BWM", 1);
         car.setId(1);
         return car;
     }
 
-    private List<Car> createFakeCarsList() {
-        List<Car> carsList = new ArrayList<>();
-
-        Car firstCar = new Car("BWM", 1);
-        firstCar.setId(1);
-        Car secondCar = new Car("Audi", 1);
-        secondCar.setId(2);
-        Car thirdCar = new Car("Toyota", 1);
-        thirdCar.setId(3);
-
-        carsList.add(firstCar);
-        carsList.add(secondCar);
-        carsList.add(thirdCar);
-
-        return carsList;
-    }
-
-    private List<Company> createFakeCompaniesList() {
-        List<Company> companiesList = new ArrayList<>();
-
-        Company firstCompany = new Company("SIXT");
-        firstCompany.setId(1);
-        Company secondCompany = new Company("OkCar");
-        secondCompany.setId(2);
-        Company thirdCompany = new Company("EuropeCar");
-        thirdCompany.setId(3);
-
-        companiesList.add(firstCompany);
-        companiesList.add(secondCompany);
-        companiesList.add(thirdCompany);
-
-        return companiesList;
+    private Company createTestCompany() {
+        Company company = new Company("SIXT");
+        company.setId(1);
+        return company;
     }
 }

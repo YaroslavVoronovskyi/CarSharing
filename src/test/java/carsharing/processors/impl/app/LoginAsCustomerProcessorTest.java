@@ -43,51 +43,34 @@ public class LoginAsCustomerProcessorTest {
     public void shouldShowMessageThatCustomersListIsEmpty() {
         Mockito.when(customerServiceMock.getAll()).thenReturn(new ArrayList<>());
         loginAsCustomerProcessor.doAction();
-        Mockito.verify(customerServiceMock, Mockito.times(1)).getAll();
+        Mockito.verify(customerServiceMock).getAll();
     }
 
     @Test
-    public void shouldLoginAsCustomer() {
+    public void shouldCheckLoginAsCustomerProcessor() {
         try (MockedStatic<ConsoleReader> mockStatic = Mockito.mockStatic(ConsoleReader.class)) {
-            Mockito.when(customerServiceMock.getAll()).thenReturn(createFakeCustomersList());
-            Mockito.when(customerProcessorsFactoryMock.getCustomerProcessorByAction("2")).thenReturn(carProcessorMock);
-            Customer customer = createFakeCustomer();
-            mockStatic.when(() -> ConsoleReader.getIntFromConsole(3)).thenReturn(1);
-            mockStatic.when(() -> ConsoleReader.getStringFromConsole(Constants.QUOTE + customer.getName()
+            Mockito.when(customerServiceMock.getAll()).thenReturn(List.of(createTestCustomer()));
+            Mockito.when(customerProcessorsFactoryMock.getCustomerProcessorByAction("2"))
+                    .thenReturn(carProcessorMock);
+            mockStatic.when(() -> ConsoleReader.getIntFromConsole(1)).thenReturn(1);
+            mockStatic.when(() -> ConsoleReader.getStringFromConsole(Constants.CORRECT_TITLE_MESSAGE)).thenReturn("2");
+            mockStatic.when(() -> ConsoleReader.getStringFromConsole(Constants.QUOTE + createTestCustomer().getName()
                             + Constants.QUOTE_WITH_COLON + Constants.CUSTOMER_PROCESSOR_MENU_MESSAGE))
-                    .thenReturn("2");
+                    .thenReturn("7");
+            Mockito.when(carProcessorMock.doActionWithCustomer(createTestCustomer())).thenReturn(false);
 
             loginAsCustomerProcessor.doAction();
 
-            Mockito.verify(customerServiceMock, Mockito.times(1)).getAll();
-            Mockito.verify(customerProcessorsFactoryMock, Mockito.times(1)).getCustomerProcessorByAction("2");
+            Mockito.verify(customerServiceMock).getAll();
+            Mockito.verify(customerProcessorsFactoryMock).getCustomerProcessorByAction("2");
+            Mockito.verify(carProcessorMock).doActionWithCustomer(createTestCustomer());
         }
     }
 
-    private Customer createFakeCustomer() {
+    private Customer createTestCustomer() {
         Customer customer = new Customer("Yaroslav");
         customer.setId(1);
         customer.setRentedCarId(0);
         return customer;
-    }
-
-    private List<Customer> createFakeCustomersList() {
-        List<Customer> customersList = new ArrayList<>();
-
-        Customer firstCustomer = new Customer("Yaroslav");
-        firstCustomer.setId(1);
-        firstCustomer.setRentedCarId(0);
-        Customer secondCustomer = new Customer("Piter");
-        secondCustomer.setId(2);
-        secondCustomer.setRentedCarId(0);
-        Customer thirdCustomer = new Customer("Boris");
-        thirdCustomer.setId(3);
-        thirdCustomer.setRentedCarId(0);
-
-        customersList.add(firstCustomer);
-        customersList.add(secondCustomer);
-        customersList.add(thirdCustomer);
-
-        return customersList;
     }
 }

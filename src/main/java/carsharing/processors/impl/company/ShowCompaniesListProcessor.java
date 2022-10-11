@@ -38,9 +38,6 @@ public class ShowCompaniesListProcessor implements ICompanyProcessor {
 
         int companyNumber = ConsoleReader.getIntFromConsole(index);
 
-        if (companyNumber == 0) {
-            return true;
-        }
         Company company = companiesList.get(companyNumber - 1);
         boolean needContinue = true;
         while (needContinue) {

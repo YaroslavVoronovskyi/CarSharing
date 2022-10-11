@@ -33,13 +33,15 @@ public class CreateNewCarProcessorTest {
     }
 
     @Test
-    public void shouldAddNewCarProcessor() {
+    public void shouldCheckAddNewCarProcessor() {
         try (MockedStatic<ConsoleReader> mockStatic = Mockito.mockStatic(ConsoleReader.class)) {
             Mockito.doNothing().when(carServiceMock).save(isA(Car.class));
             mockStatic.when(() -> ConsoleReader.getStringFromConsole("Enter the car name:", Constants.NAME_CHECK_PATTERN,
                     Constants.WRONG_NAME_FORMAT_ERROR)).thenReturn("BMW");
+
             createNewCarProcessor.doActionWithCar(1);
-            Mockito.verify(carServiceMock, Mockito.times(1)).save(isA(Car.class));
+
+            Mockito.verify(carServiceMock).save(isA(Car.class));
             assertTrue(createNewCarProcessor.doActionWithCar(1));
         }
     }

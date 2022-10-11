@@ -1,7 +1,6 @@
-package carsharing.service.impl;
+package carsharing.service;
 
 import carsharing.Constants;
-import carsharing.service.Validator;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;

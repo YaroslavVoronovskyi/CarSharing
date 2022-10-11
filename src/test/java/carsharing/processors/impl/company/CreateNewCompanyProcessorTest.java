@@ -33,13 +33,15 @@ public class CreateNewCompanyProcessorTest {
     }
 
     @Test
-    public void shouldAddNewCompanyProcessor() {
+    public void shouldCheckAddNewCompanyProcessor() {
         try (MockedStatic<ConsoleReader> mockStatic = Mockito.mockStatic(ConsoleReader.class)) {
             Mockito.doNothing().when(companyServiceMock).save(isA(Company.class));
             mockStatic.when(() -> ConsoleReader.getStringFromConsole("Enter the company name:", Constants.NAME_CHECK_PATTERN,
                     Constants.WRONG_NAME_FORMAT_ERROR)).thenReturn("SIXT");
+
             createNewCompanyProcessor.doActionWithCompany();
-            Mockito.verify(companyServiceMock, Mockito.times(1)).save(isA(Company.class));
+
+            Mockito.verify(companyServiceMock).save(isA(Company.class));
             assertTrue(createNewCompanyProcessor.doActionWithCompany());
         }
     }

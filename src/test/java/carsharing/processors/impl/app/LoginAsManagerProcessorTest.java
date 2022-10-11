@@ -33,13 +33,18 @@ public class LoginAsManagerProcessorTest {
     }
 
     @Test
-    public void shouldLoginAsManager() {
+    public void shouldCheckLoginAsManagerProcessor() {
         try (MockedStatic<ConsoleReader> mockStatic = Mockito.mockStatic(ConsoleReader.class)) {
             Mockito.when(companyProcessorsFactoryMock.getCompanyProcessorByAction("1")).thenReturn(companyProcessorMock);
+            mockStatic.when(() -> ConsoleReader.getStringFromConsole(Constants.CORRECT_TITLE_MESSAGE)).thenReturn("1");
             mockStatic.when(() -> ConsoleReader.getStringFromConsole(Constants.COMPANY_PROCESSOR_MENU_MESSAGE))
-                    .thenReturn("1");
+                    .thenReturn("7");
+            Mockito.when(companyProcessorMock.doActionWithCompany()).thenReturn(false);
+
             loginAsManagerProcessor.doAction();
-            Mockito.verify(companyProcessorsFactoryMock, Mockito.times(1)).getCompanyProcessorByAction("1");
+
+            Mockito.verify(companyProcessorMock).doActionWithCompany();
+            Mockito.verify(companyProcessorsFactoryMock).getCompanyProcessorByAction("1");
         }
     }
 }

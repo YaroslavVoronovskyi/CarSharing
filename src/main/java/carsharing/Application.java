@@ -56,7 +56,7 @@ public class Application {
         ICustomerService customerService = new CustomerService(customerDao);
 
         ICustomerProcessor rentNewCarProcessor = new RentNewCarProcessor(companyService, carService, customerService);
-        ICustomerProcessor returnRentedCarProcessor = new ReturnRentedCarProcessor(customerService, carService);
+        ICustomerProcessor returnRentedCarProcessor = new ReturnRentedCarProcessor(customerService);
         ICustomerProcessor showCustomerRentedCarProcessor = new ShowCustomerRentedCarProcessor(carService, companyService);
         ICustomerProcessor backFromCustomerMenuToPreviousMenuProcessor = new BackFromCustomerMenuToPreviousMenuProcessor();
 

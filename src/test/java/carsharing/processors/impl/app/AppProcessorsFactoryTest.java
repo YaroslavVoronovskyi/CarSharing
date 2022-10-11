@@ -1,43 +1,46 @@
 package carsharing.processors.impl.app;
 
-import carsharing.dao.ICustomerDao;
-import carsharing.dao.impl.CustomerDao;
 import carsharing.processors.IAppActionProcessor;
 import carsharing.processors.IAppProcessorsFactory;
-import carsharing.processors.ICompanyProcessorsFactory;
-import carsharing.processors.ICustomerProcessorsFactory;
-import carsharing.processors.impl.company.CompanyProcessorFactory;
-import carsharing.processors.impl.customer.CustomerProcessorsFactory;
-import carsharing.service.ICustomerService;
-import carsharing.service.impl.CustomerService;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class AppProcessorsFactoryTest {
 
+    @Mock
+    private IAppActionProcessor processorMock;
+
     @Test
-    public void shouldReturnSupportedActionTitle() {
-        ICompanyProcessorsFactory companyProcessorsFactory = new CompanyProcessorFactory(List.of());
-        IAppActionProcessor loginAsManagerProcessor = new LoginAsManagerProcessor(companyProcessorsFactory);
-        ICustomerDao customerDao = new CustomerDao();
-        ICustomerService customerService = new CustomerService(customerDao);
-        ICustomerProcessorsFactory customerProcessorsFactory = new CustomerProcessorsFactory(List.of());
-        IAppActionProcessor loginAsCustomerProcessor = new LoginAsCustomerProcessor(customerService, customerProcessorsFactory);
-        IAppActionProcessor createNewCustomerProcessor = new CreateNewCustomerProcessor(customerService);
-        IAppActionProcessor exitApplicationProcessor = new ExitApplicationProcessor();
-        IAppProcessorsFactory processorsFactory = new AppProcessorsFactory(List.of(loginAsManagerProcessor, exitApplicationProcessor,
-                loginAsCustomerProcessor, createNewCustomerProcessor));
+    public void shouldCheckGetProcessorByActionProcessor() {
+        Mockito.when(processorMock.getSupportedActionTitle()).thenReturn("testTitle");
+        IAppProcessorsFactory processorsFactory = new AppProcessorsFactory(List.of(processorMock));
 
-        assertNotNull(processorsFactory.getProcessorByAction("0"));
-        assertNotNull(processorsFactory.getProcessorByAction("1"));
-        assertNotNull(processorsFactory.getProcessorByAction("2"));
-        assertNotNull(processorsFactory.getProcessorByAction("3"));
+        IAppActionProcessor processorFromFactory = processorsFactory.getProcessorByAction("testTitle");
 
-        assertNull(processorsFactory.getProcessorByAction("4"));
-        assertNull(processorsFactory.getProcessorByAction("5"));
-        assertNull(processorsFactory.getProcessorByAction("6"));
+        assertNotNull(processorFromFactory);
+        assertEquals(processorMock, processorFromFactory);
+    }
+
+    @Test
+    public void shouldReturnNullIfProcessorNotExists() {
+        Mockito.when(processorMock.getSupportedActionTitle()).thenReturn("testTitle");
+        IAppProcessorsFactory processorsFactory = new AppProcessorsFactory(List.of(processorMock));
+
+        IAppActionProcessor processorFromFactory = processorsFactory.getProcessorByAction("4");
+
+        assertNull(processorFromFactory);
     }
 }

@@ -1,48 +1,89 @@
 package carsharing.dao.impl;
 
-import carsharing.dao.ICompanyDao;
+import carsharing.Constants;
+import carsharing.connection.DataSource;
 import carsharing.model.Company;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class CompanyDaoTest extends AbstractDaoTest {
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
+public class CompanyDaoTest {
 
-    private final ICompanyDao companyDao = new CompanyDao();
+    @Mock
+    private Connection connectionMock;
+    @Mock
+    private PreparedStatement statementMock;
+    @Mock
+    private ResultSet resultSetMock;
+    @InjectMocks
+    private CompanyDao companyDao;
 
-    @Test()
-    public void shouldReturnExpectedNumberOfCompanies() {
-        List<Company> companiesList = companyDao.getAll();
-        assertNotNull(companiesList);
-        assertEquals(companiesList.size(), 5);
+    @Test
+    public void shouldSaveNewCompany() throws SQLException {
+        try (MockedStatic<DataSource> mockStatic = Mockito.mockStatic(DataSource.class)) {
+            mockStatic.when(DataSource::getConnection).thenReturn(connectionMock);
+            Mockito.when(connectionMock.prepareStatement(Constants.Queries.COMPANY_SAVE_QUERY)).thenReturn(statementMock);
+            Mockito.when(statementMock.execute()).thenReturn(true);
+
+            companyDao.save(new Company("SIXT"));
+
+            Mockito.verify(connectionMock).prepareStatement(Constants.Queries.COMPANY_SAVE_QUERY);
+            Mockito.verify(statementMock).execute();
+        }
     }
 
-    @Test()
-    public void shouldCreateNewCompaniesAndReturnExpectedNumberOfCompanies() {
-        Company company = new Company("EuropeCar");
-        companyDao.save(company);
-        List<Company> companiesList = companyDao.getAll();
-        assertNotNull(companiesList);
-        assertEquals(companiesList.size(), 5);
+    @Test
+    public void shouldGetExpectedCompaniesList() throws SQLException {
+        try (MockedStatic<DataSource> mockStatic = Mockito.mockStatic(DataSource.class)) {
+            mockStatic.when(DataSource::getConnection).thenReturn(connectionMock);
+            Mockito.when(connectionMock.prepareStatement(Constants.Queries.COMPANY_GET_ALL_QUERY)).thenReturn(statementMock);
+            Mockito.when(statementMock.executeQuery()).thenReturn(resultSetMock);
+            Mockito.when(resultSetMock.next()).thenReturn(true, false);
+
+            List<Company> companiesList = companyDao.getAll();
+
+            Mockito.verify(connectionMock).prepareStatement(Constants.Queries.COMPANY_GET_ALL_QUERY);
+            Mockito.verify(statementMock).executeQuery();
+            Mockito.verify(resultSetMock, Mockito.times(2)).next();
+
+            assertNotNull(companiesList);
+            assertEquals(companiesList.size(), 1);
+        }
     }
 
+    @Test
+    public void shouldGetExpectedCompanyById() throws SQLException {
+        try (MockedStatic<DataSource> mockStatic = Mockito.mockStatic(DataSource.class)) {
+            mockStatic.when(DataSource::getConnection).thenReturn(connectionMock);
+            Mockito.when(connectionMock.prepareStatement(Constants.Queries.COMPANY_GET_QUERY)).thenReturn(statementMock);
+            Mockito.when(statementMock.executeQuery()).thenReturn(resultSetMock);
+            Mockito.when(resultSetMock.next()).thenReturn(true, false);
 
-    @Test()
-    public void shouldGetByIdAndReturnExpectedCompany() {
-        Company firstCompany = companyDao.getById(1);
-        Company secondCompany = companyDao.getById(2);
-        Company thirdCompany = companyDao.getById(3);
-        assertNotNull(firstCompany);
-        assertEquals(firstCompany.getId(), 1);
-        assertEquals(firstCompany.getName(), "SIXT");
-        assertNotNull(secondCompany);
-        assertEquals(secondCompany.getId(), 2);
-        assertEquals(secondCompany.getName(), "OkCars");
-        assertNotNull(thirdCompany);
-        assertEquals(thirdCompany.getId(), 3);
-        assertEquals(thirdCompany.getName(), "CarToGo");
+            Company company = companyDao.getById(0);
+
+            Mockito.verify(connectionMock).prepareStatement(Constants.Queries.COMPANY_GET_QUERY);
+            Mockito.verify(statementMock).executeQuery();
+            Mockito.verify(resultSetMock, Mockito.times(2)).next();
+
+            assertNotNull(company);
+            assertEquals(company.getId(), 0);
+        }
     }
 }

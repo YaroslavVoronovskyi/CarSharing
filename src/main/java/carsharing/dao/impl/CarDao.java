@@ -36,18 +36,8 @@ public class CarDao extends AbstractDao<Car> implements ICarDao {
 
     @Override
     protected void fillUpdateStatement(PreparedStatement statement, Car model) throws SQLException {
-        statement.setObject(Constants.FIRST_COLUMN_INDEX, model.isRented());
+        statement.setInt(Constants.FIRST_COLUMN_INDEX, model.getCompanyId());
         statement.setInt(Constants.SECOND_COLUMN_INDEX, model.getId());
-    }
-
-    @Override
-    protected Car buildCustomModel(ResultSet resultSet) throws SQLException {
-        return buildCar(resultSet);
-    }
-
-    @Override
-    protected String getByIdQuery() {
-        return Constants.Queries.CAR_GET_QUERY;
     }
 
     @Override
