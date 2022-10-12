@@ -19,7 +19,7 @@ public class ShowCustomerRentedCarProcessor implements ICustomerProcessor {
 
     @Override
     public boolean doActionWithCustomer(Customer customer) {
-        if (customer.getRentedCarId() == 0) {
+        if (customer.getRentedCarId() == null) {
             System.out.println("You didn't rent a car!");
             return true;
         }

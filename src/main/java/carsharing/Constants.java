@@ -59,7 +59,6 @@ public class Constants {
         public static final String COMPANY_GET_QUERY = "SELECT * FROM company WHERE id = ?";
         public static final String COMPANY_GET_ALL_QUERY = "SELECT * FROM company";
         public static final String CAR_SAVE_QUERY = "INSERT INTO car (name, company_id, rented) VALUES (?, ?, ?)";
-        public static final String CAR_GET_QUERY = "SELECT * FROM car WHERE id = ?";
         public static final String CAR_UPDATE_QUERY = "UPDATE car SET rented = ? WHERE id = ?";
         public static final String CAR_GET_ALL_QUERY_BY_COMPANY_ID = "SELECT * FROM car WHERE rented = false AND company_id = ?";
         public static final String CUSTOMER_SAVE_QUERY = "INSERT INTO customer (name) VALUES (?)";

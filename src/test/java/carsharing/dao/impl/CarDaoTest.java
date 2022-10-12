@@ -19,12 +19,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 public class CarDaoTest {
 
+    private final static String TEST_CAR_NAME = "BMW";
+    private final static int TEST_CAR_ID = 1;
+    private final static int TEST_COMPANY_ID = 1;
     @Mock
     private Connection connectionMock;
     @Mock
@@ -41,9 +44,8 @@ public class CarDaoTest {
             Mockito.when(connectionMock.prepareStatement(Constants.Queries.CAR_SAVE_QUERY)).thenReturn(statementMock);
             Mockito.when(statementMock.execute()).thenReturn(true);
 
-            carDao.save(new Car("BMW", 1));
+            carDao.save(new Car(TEST_CAR_NAME, TEST_COMPANY_ID));
 
-            Mockito.verify(connectionMock).prepareStatement(Constants.Queries.CAR_SAVE_QUERY);
             Mockito.verify(statementMock).execute();
         }
     }
@@ -55,35 +57,33 @@ public class CarDaoTest {
             Mockito.when(connectionMock.prepareStatement(Constants.Queries.CAR_UPDATE_QUERY)).thenReturn(statementMock);
             Mockito.when(statementMock.executeUpdate()).thenReturn(1, 1);
 
-            carDao.update(testCarForUpdate());
+            carDao.update(createTestCar());
 
-            Mockito.verify(connectionMock).prepareStatement(Constants.Queries.CAR_UPDATE_QUERY);
             Mockito.verify(statementMock).executeUpdate();
         }
     }
 
     @Test
-    public void shouldGetExpectedCarsListByCompanyId() throws SQLException {
+    public void shouldGetCarsListByCompanyId() throws SQLException {
         try (MockedStatic<DataSource> mockStatic = Mockito.mockStatic(DataSource.class)) {
             mockStatic.when(DataSource::getConnection).thenReturn(connectionMock);
             Mockito.when(connectionMock.prepareStatement(Constants.Queries.CAR_GET_ALL_QUERY_BY_COMPANY_ID)).thenReturn(statementMock);
             Mockito.when(statementMock.executeQuery()).thenReturn(resultSetMock);
             Mockito.when(resultSetMock.next()).thenReturn(true, false);
+            Mockito.when(resultSetMock.getInt(Constants.FIRST_COLUMN_INDEX)).thenReturn(TEST_CAR_ID);
+            Mockito.when(resultSetMock.getString(Constants.SECOND_COLUMN_INDEX)).thenReturn(TEST_CAR_NAME);
+            Mockito.when(resultSetMock.getInt(Constants.THIRD_COLUMN_INDEX)).thenReturn(TEST_COMPANY_ID);
+            List<Car> expectedCustomersList = List.of(createTestCar());
 
-            List<Car> customersList = carDao.getAllCarsByCompanyId(1);
+            List<Car> actualCustomersList = carDao.getAllCarsByCompanyId(TEST_COMPANY_ID);
 
-            Mockito.verify(connectionMock).prepareStatement(Constants.Queries.CAR_GET_ALL_QUERY_BY_COMPANY_ID);
-            Mockito.verify(statementMock).executeQuery();
-            Mockito.verify(resultSetMock, Mockito.times(2)).next();
-
-            assertNotNull(customersList);
-            assertEquals(customersList.size(), 1);
+            assertEquals(expectedCustomersList, actualCustomersList);
         }
     }
 
-    private Car testCarForUpdate() {
-        Car car = new Car("BMW", 1);
-        car.setId(1);
+    private Car createTestCar() {
+        Car car = new Car(TEST_CAR_NAME, TEST_COMPANY_ID);
+        car.setId(TEST_CAR_ID);
         return car;
     }
 }

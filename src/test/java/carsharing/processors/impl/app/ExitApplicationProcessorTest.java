@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 @MockitoSettings(strictness = Strictness.LENIENT)
 public class ExitApplicationProcessorTest {
 
+    private final static String TEST_SUPPORTED_ACTION_TITLE = "0";
     @InjectMocks
     private ExitApplicationProcessor exitApplicationProcessor;
 
@@ -24,6 +25,6 @@ public class ExitApplicationProcessorTest {
 
     @Test
     public void shouldReturnSupportedActionTitle() {
-        assertEquals(exitApplicationProcessor.getSupportedActionTitle(), "0");
+        assertEquals(exitApplicationProcessor.getSupportedActionTitle(), TEST_SUPPORTED_ACTION_TITLE);
     }
 }

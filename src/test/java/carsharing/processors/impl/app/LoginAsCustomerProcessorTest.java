@@ -25,6 +25,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @MockitoSettings(strictness = Strictness.LENIENT)
 public class LoginAsCustomerProcessorTest {
 
+    private final static String TEST_SUPPORTED_ACTION_TITLE = "2";
+    private final static String TEST_UNSUPPORTED_ACTION_TITLE = "7";
+    private final static String TEST_CUSTOMER_NAME = "Yaroslav";
+    private final static int TEST_CUSTOMER_ID = 1;
+    private final static int MAX_CUSTOMER_NUMBER = 1;
+
     @Mock
     private ICustomerService customerServiceMock;
     @Mock
@@ -36,7 +42,7 @@ public class LoginAsCustomerProcessorTest {
 
     @Test
     public void shouldReturnSupportedActionTitle() {
-        assertEquals(loginAsCustomerProcessor.getSupportedActionTitle(), "2");
+        assertEquals(loginAsCustomerProcessor.getSupportedActionTitle(), TEST_SUPPORTED_ACTION_TITLE);
     }
 
     @Test
@@ -50,27 +56,28 @@ public class LoginAsCustomerProcessorTest {
     public void shouldCheckLoginAsCustomerProcessor() {
         try (MockedStatic<ConsoleReader> mockStatic = Mockito.mockStatic(ConsoleReader.class)) {
             Mockito.when(customerServiceMock.getAll()).thenReturn(List.of(createTestCustomer()));
-            Mockito.when(customerProcessorsFactoryMock.getCustomerProcessorByAction("2"))
+            Mockito.when(customerProcessorsFactoryMock.getCustomerProcessorByAction(TEST_SUPPORTED_ACTION_TITLE))
                     .thenReturn(carProcessorMock);
-            mockStatic.when(() -> ConsoleReader.getIntFromConsole(1)).thenReturn(1);
-            mockStatic.when(() -> ConsoleReader.getStringFromConsole(Constants.CORRECT_TITLE_MESSAGE)).thenReturn("2");
+            mockStatic.when(() -> ConsoleReader.getIntFromConsole(MAX_CUSTOMER_NUMBER)).thenReturn(TEST_CUSTOMER_ID);
+            mockStatic.when(() -> ConsoleReader.getStringFromConsole(Constants.CORRECT_TITLE_MESSAGE))
+                    .thenReturn(TEST_SUPPORTED_ACTION_TITLE);
             mockStatic.when(() -> ConsoleReader.getStringFromConsole(Constants.QUOTE + createTestCustomer().getName()
                             + Constants.QUOTE_WITH_COLON + Constants.CUSTOMER_PROCESSOR_MENU_MESSAGE))
-                    .thenReturn("7");
+                    .thenReturn(TEST_UNSUPPORTED_ACTION_TITLE);
             Mockito.when(carProcessorMock.doActionWithCustomer(createTestCustomer())).thenReturn(false);
 
             loginAsCustomerProcessor.doAction();
 
             Mockito.verify(customerServiceMock).getAll();
-            Mockito.verify(customerProcessorsFactoryMock).getCustomerProcessorByAction("2");
+            Mockito.verify(customerProcessorsFactoryMock).getCustomerProcessorByAction(TEST_SUPPORTED_ACTION_TITLE);
             Mockito.verify(carProcessorMock).doActionWithCustomer(createTestCustomer());
         }
     }
 
     private Customer createTestCustomer() {
-        Customer customer = new Customer("Yaroslav");
-        customer.setId(1);
-        customer.setRentedCarId(0);
+        Customer customer = new Customer(TEST_CUSTOMER_NAME);
+        customer.setId(TEST_CUSTOMER_ID);
+        customer.setRentedCarId(null);
         return customer;
     }
 }

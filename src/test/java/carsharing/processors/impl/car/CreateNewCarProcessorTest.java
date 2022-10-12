@@ -22,6 +22,9 @@ import static org.mockito.ArgumentMatchers.isA;
 @MockitoSettings(strictness = Strictness.LENIENT)
 public class CreateNewCarProcessorTest {
 
+    private final static String TEST_SUPPORTED_ACTION_TITLE = "2";
+    private final static String TEST_CAR_NAME = "BMW";
+    private final static int TEST_COMPANY_ID = 1;
     @Mock
     private ICarService carServiceMock;
     @InjectMocks
@@ -29,20 +32,20 @@ public class CreateNewCarProcessorTest {
 
     @Test
     public void shouldReturnSupportedActionTitle() {
-        assertEquals(createNewCarProcessor.getSupportedCarActionTitle(), "2");
+        assertEquals(createNewCarProcessor.getSupportedCarActionTitle(), TEST_SUPPORTED_ACTION_TITLE);
     }
 
     @Test
     public void shouldCheckAddNewCarProcessor() {
         try (MockedStatic<ConsoleReader> mockStatic = Mockito.mockStatic(ConsoleReader.class)) {
             Mockito.doNothing().when(carServiceMock).save(isA(Car.class));
-            mockStatic.when(() -> ConsoleReader.getStringFromConsole("Enter the car name:", Constants.NAME_CHECK_PATTERN,
-                    Constants.WRONG_NAME_FORMAT_ERROR)).thenReturn("BMW");
+            mockStatic.when(() -> ConsoleReader.getStringFromConsole("Enter the car name:",
+                    Constants.NAME_CHECK_PATTERN, Constants.WRONG_NAME_FORMAT_ERROR)).thenReturn(TEST_CAR_NAME);
 
-            createNewCarProcessor.doActionWithCar(1);
+            createNewCarProcessor.doActionWithCar(TEST_COMPANY_ID);
 
             Mockito.verify(carServiceMock).save(isA(Car.class));
-            assertTrue(createNewCarProcessor.doActionWithCar(1));
+            assertTrue(createNewCarProcessor.doActionWithCar(TEST_COMPANY_ID));
         }
     }
 }

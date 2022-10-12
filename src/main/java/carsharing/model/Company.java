@@ -2,6 +2,8 @@ package carsharing.model;
 
 import carsharing.Constants;
 
+import java.util.Objects;
+
 public class Company {
 
     private int id;
@@ -33,5 +35,18 @@ public class Company {
     @Override
     public String toString() {
         return id + Constants.DOT_SEPARATOR + name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Company company = (Company) o;
+        return id == company.id && name.equals(company.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
     }
 }

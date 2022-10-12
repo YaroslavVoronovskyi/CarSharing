@@ -20,15 +20,17 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 @MockitoSettings(strictness = Strictness.LENIENT)
 public class CarProcessorsFactoryTest {
 
+    private final static String TEST_SUPPORTED_ACTION_TITLE = "1";
+    private final static String TEST_UNSUPPORTED_ACTION_TITLE = "7";
     @Mock
     private ICarProcessor processorMock;
 
     @Test
     public void shouldGetCarProcessorByAction() {
-        Mockito.when(processorMock.getSupportedCarActionTitle()).thenReturn("testTitle");
+        Mockito.when(processorMock.getSupportedCarActionTitle()).thenReturn(TEST_SUPPORTED_ACTION_TITLE);
         ICarProcessorsFactory processorsFactory = new CarProcessorsFactory(List.of(processorMock));
 
-        ICarProcessor processorFromFactory = processorsFactory.getCarProcessorByAction("testTitle");
+        ICarProcessor processorFromFactory = processorsFactory.getCarProcessorByAction(TEST_SUPPORTED_ACTION_TITLE);
 
         assertNotNull(processorFromFactory);
         assertEquals(processorMock, processorFromFactory);
@@ -36,10 +38,10 @@ public class CarProcessorsFactoryTest {
 
     @Test
     public void shouldReturnNullIfProcessorNotExists() {
-        Mockito.when(processorMock.getSupportedCarActionTitle()).thenReturn("testTitle");
+        Mockito.when(processorMock.getSupportedCarActionTitle()).thenReturn(TEST_SUPPORTED_ACTION_TITLE);
         ICarProcessorsFactory processorsFactory = new CarProcessorsFactory(List.of(processorMock));
 
-        ICarProcessor processorFromFactory = processorsFactory.getCarProcessorByAction("5");
+        ICarProcessor processorFromFactory = processorsFactory.getCarProcessorByAction(TEST_UNSUPPORTED_ACTION_TITLE);
 
         assertNull(processorFromFactory);
     }

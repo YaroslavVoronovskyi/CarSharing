@@ -22,6 +22,8 @@ import static org.mockito.ArgumentMatchers.isA;
 @MockitoSettings(strictness = Strictness.LENIENT)
 public class CreateNewCompanyProcessorTest {
 
+    private final static String TEST_SUPPORTED_ACTION_TITLE = "2";
+    private final static String TEST_COMPANY_NAME = "SIXT";
     @Mock
     private ICompanyService companyServiceMock;
     @InjectMocks
@@ -29,15 +31,15 @@ public class CreateNewCompanyProcessorTest {
 
     @Test
     public void shouldReturnSupportedActionTitle() {
-        assertEquals(createNewCompanyProcessor.getSupportedCompanyActionTitle(), "2");
+        assertEquals(createNewCompanyProcessor.getSupportedCompanyActionTitle(), TEST_SUPPORTED_ACTION_TITLE);
     }
 
     @Test
     public void shouldCheckAddNewCompanyProcessor() {
         try (MockedStatic<ConsoleReader> mockStatic = Mockito.mockStatic(ConsoleReader.class)) {
             Mockito.doNothing().when(companyServiceMock).save(isA(Company.class));
-            mockStatic.when(() -> ConsoleReader.getStringFromConsole("Enter the company name:", Constants.NAME_CHECK_PATTERN,
-                    Constants.WRONG_NAME_FORMAT_ERROR)).thenReturn("SIXT");
+            mockStatic.when(() -> ConsoleReader.getStringFromConsole("Enter the company name:",
+                    Constants.NAME_CHECK_PATTERN, Constants.WRONG_NAME_FORMAT_ERROR)).thenReturn(TEST_COMPANY_NAME);
 
             createNewCompanyProcessor.doActionWithCompany();
 

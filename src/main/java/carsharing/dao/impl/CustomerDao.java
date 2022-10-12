@@ -16,7 +16,7 @@ public class CustomerDao extends AbstractDao<Customer> implements ICustomerDao {
         Customer customer = new Customer();
         customer.setId(resultSet.getInt(Constants.FIRST_COLUMN_INDEX));
         customer.setName(resultSet.getString(Constants.SECOND_COLUMN_INDEX));
-        customer.setRentedCarId(resultSet.getInt(Constants.THIRD_COLUMN_INDEX));
+        customer.setRentedCarId(resultSet.getObject(Constants.THIRD_COLUMN_INDEX, Integer.class));
         return customer;
     }
 

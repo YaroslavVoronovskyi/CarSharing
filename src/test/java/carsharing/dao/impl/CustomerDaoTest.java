@@ -20,12 +20,14 @@ import java.sql.SQLException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 public class CustomerDaoTest {
 
+    private final static String TEST_CUSTOMER_NAME = "Yaroslav";
+    private final static int TEST_CUSTOMER_ID = 1;
+    private final static Integer TEST_CUSTOMER_RENTED_CAR_ID = 1;
     @Mock
     private Connection connectionMock;
     @Mock
@@ -42,9 +44,8 @@ public class CustomerDaoTest {
             Mockito.when(connectionMock.prepareStatement(Constants.Queries.CUSTOMER_SAVE_QUERY)).thenReturn(statementMock);
             Mockito.when(statementMock.execute()).thenReturn(true);
 
-            customerDao.save(new Customer("Yaroslav"));
+            customerDao.save(new Customer(TEST_CUSTOMER_NAME));
 
-            Mockito.verify(connectionMock).prepareStatement(Constants.Queries.CUSTOMER_SAVE_QUERY);
             Mockito.verify(statementMock).execute();
         }
     }
@@ -56,9 +57,8 @@ public class CustomerDaoTest {
             Mockito.when(connectionMock.prepareStatement(Constants.Queries.CUSTOMER_UPDATE_QUERY)).thenReturn(statementMock);
             Mockito.when(statementMock.executeUpdate()).thenReturn(1, 1);
 
-            customerDao.update(testCustomerForUpdate());
+            customerDao.update(createTestCustomer());
 
-            Mockito.verify(connectionMock).prepareStatement(Constants.Queries.CUSTOMER_UPDATE_QUERY);
             Mockito.verify(statementMock).executeUpdate();
         }
     }
@@ -70,15 +70,15 @@ public class CustomerDaoTest {
             Mockito.when(connectionMock.prepareStatement(Constants.Queries.CUSTOMER_GET_ALL_QUERY)).thenReturn(statementMock);
             Mockito.when(statementMock.executeQuery()).thenReturn(resultSetMock);
             Mockito.when(resultSetMock.next()).thenReturn(true, false);
+            Mockito.when(resultSetMock.getInt(Constants.FIRST_COLUMN_INDEX)).thenReturn(TEST_CUSTOMER_ID);
+            Mockito.when(resultSetMock.getString(Constants.SECOND_COLUMN_INDEX)).thenReturn(TEST_CUSTOMER_NAME);
+            Mockito.when(resultSetMock.getObject(Constants.THIRD_COLUMN_INDEX, Integer.class))
+                    .thenReturn(TEST_CUSTOMER_RENTED_CAR_ID);
+            List<Customer> expectedCustomersList = List.of(createTestCustomer());
 
-            List<Customer> customersList = customerDao.getAll();
+            List<Customer> actualCustomersList = customerDao.getAll();
 
-            Mockito.verify(connectionMock).prepareStatement(Constants.Queries.CUSTOMER_GET_ALL_QUERY);
-            Mockito.verify(statementMock).executeQuery();
-            Mockito.verify(resultSetMock, Mockito.times(2)).next();
-
-            assertNotNull(customersList);
-            assertEquals(customersList.size(), 1);
+            assertEquals(expectedCustomersList, actualCustomersList);
         }
     }
 
@@ -89,23 +89,22 @@ public class CustomerDaoTest {
             Mockito.when(connectionMock.prepareStatement(Constants.Queries.CUSTOMER_GET_QUERY)).thenReturn(statementMock);
             Mockito.when(statementMock.executeQuery()).thenReturn(resultSetMock);
             Mockito.when(resultSetMock.next()).thenReturn(true, false);
+            Mockito.when(resultSetMock.getInt(Constants.FIRST_COLUMN_INDEX)).thenReturn(TEST_CUSTOMER_ID);
+            Mockito.when(resultSetMock.getString(Constants.SECOND_COLUMN_INDEX)).thenReturn(TEST_CUSTOMER_NAME);
+            Mockito.when(resultSetMock.getObject(Constants.THIRD_COLUMN_INDEX, Integer.class))
+                    .thenReturn(TEST_CUSTOMER_RENTED_CAR_ID);
+            Customer expectedCustomer = createTestCustomer();
 
-            Customer customer = customerDao.getById(0);
+            Customer actualCustomer = customerDao.getById(TEST_CUSTOMER_ID);
 
-            Mockito.verify(connectionMock).prepareStatement(Constants.Queries.CUSTOMER_GET_QUERY);
-            Mockito.verify(statementMock).executeQuery();
-            Mockito.verify(resultSetMock, Mockito.times(2)).next();
-
-            assertNotNull(customer);
-            assertEquals(customer.getId(), 0);
-            assertEquals(customer.getRentedCarId(), 0);
+            assertEquals(expectedCustomer, actualCustomer);
         }
     }
 
-    private Customer testCustomerForUpdate() {
-        Customer customer = new Customer("Yaroslav");
-        customer.setId(1);
-        customer.setRentedCarId(1);
+    private Customer createTestCustomer() {
+        Customer customer = new Customer(TEST_CUSTOMER_NAME);
+        customer.setId(TEST_CUSTOMER_ID);
+        customer.setRentedCarId(TEST_CUSTOMER_RENTED_CAR_ID);
         return customer;
     }
 }

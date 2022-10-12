@@ -20,12 +20,13 @@ import java.sql.SQLException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 public class CompanyDaoTest {
 
+    private final static String TEST_COMPANY_NAME = "SIXT";
+    private final static int TEST_COMPANY_ID = 1;
     @Mock
     private Connection connectionMock;
     @Mock
@@ -42,9 +43,8 @@ public class CompanyDaoTest {
             Mockito.when(connectionMock.prepareStatement(Constants.Queries.COMPANY_SAVE_QUERY)).thenReturn(statementMock);
             Mockito.when(statementMock.execute()).thenReturn(true);
 
-            companyDao.save(new Company("SIXT"));
+            companyDao.save(new Company(TEST_COMPANY_NAME));
 
-            Mockito.verify(connectionMock).prepareStatement(Constants.Queries.COMPANY_SAVE_QUERY);
             Mockito.verify(statementMock).execute();
         }
     }
@@ -53,18 +53,17 @@ public class CompanyDaoTest {
     public void shouldGetExpectedCompaniesList() throws SQLException {
         try (MockedStatic<DataSource> mockStatic = Mockito.mockStatic(DataSource.class)) {
             mockStatic.when(DataSource::getConnection).thenReturn(connectionMock);
-            Mockito.when(connectionMock.prepareStatement(Constants.Queries.COMPANY_GET_ALL_QUERY)).thenReturn(statementMock);
+            Mockito.when(connectionMock.prepareStatement(Constants.Queries.COMPANY_GET_ALL_QUERY))
+                    .thenReturn(statementMock);
             Mockito.when(statementMock.executeQuery()).thenReturn(resultSetMock);
             Mockito.when(resultSetMock.next()).thenReturn(true, false);
+            Mockito.when(resultSetMock.getInt(Constants.FIRST_COLUMN_INDEX)).thenReturn(TEST_COMPANY_ID);
+            Mockito.when(resultSetMock.getString(Constants.SECOND_COLUMN_INDEX)).thenReturn(TEST_COMPANY_NAME);
+            List<Company> expectedCompaniesList = List.of(createTestCompany());
 
-            List<Company> companiesList = companyDao.getAll();
+            List<Company> actualCompaniesList = companyDao.getAll();
 
-            Mockito.verify(connectionMock).prepareStatement(Constants.Queries.COMPANY_GET_ALL_QUERY);
-            Mockito.verify(statementMock).executeQuery();
-            Mockito.verify(resultSetMock, Mockito.times(2)).next();
-
-            assertNotNull(companiesList);
-            assertEquals(companiesList.size(), 1);
+            assertEquals(expectedCompaniesList, actualCompaniesList);
         }
     }
 
@@ -75,15 +74,19 @@ public class CompanyDaoTest {
             Mockito.when(connectionMock.prepareStatement(Constants.Queries.COMPANY_GET_QUERY)).thenReturn(statementMock);
             Mockito.when(statementMock.executeQuery()).thenReturn(resultSetMock);
             Mockito.when(resultSetMock.next()).thenReturn(true, false);
+            Mockito.when(resultSetMock.getInt(Constants.FIRST_COLUMN_INDEX)).thenReturn(TEST_COMPANY_ID);
+            Mockito.when(resultSetMock.getString(Constants.SECOND_COLUMN_INDEX)).thenReturn(TEST_COMPANY_NAME);
+            Company expectedCompany = createTestCompany();
 
-            Company company = companyDao.getById(0);
+            Company actualCompany = companyDao.getById(TEST_COMPANY_ID);
 
-            Mockito.verify(connectionMock).prepareStatement(Constants.Queries.COMPANY_GET_QUERY);
-            Mockito.verify(statementMock).executeQuery();
-            Mockito.verify(resultSetMock, Mockito.times(2)).next();
-
-            assertNotNull(company);
-            assertEquals(company.getId(), 0);
+            assertEquals(expectedCompany, actualCompany);
         }
+    }
+
+    private Company createTestCompany() {
+        Company company = new Company(TEST_COMPANY_NAME);
+        company.setId(TEST_COMPANY_ID);
+        return company;
     }
 }

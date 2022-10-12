@@ -20,6 +20,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @MockitoSettings(strictness = Strictness.LENIENT)
 public class ShowCustomerRentedCarProcessorTest {
 
+    private final static String TEST_SUPPORTED_ACTION_TITLE = "3";
+    private final static String TEST_CUSTOMER_NAME = "Yaroslav";
+    private final static int TEST_CUSTOMER_ID = 1;
+    private final static String TEST_CAR_NAME = "BMW";
+    private final static int TEST_CAR_ID = 1;
+    private final static String TEST_COMPANY_NAME = "SIXT";
+    private final static int TEST_COMPANY_ID = 1;
     @Mock
     private ICompanyService companyServiceMock;
     @Mock
@@ -29,54 +36,54 @@ public class ShowCustomerRentedCarProcessorTest {
 
     @Test
     public void shouldReturnSupportedActionTitle() {
-        assertEquals(showCustomerRentedCarProcessor.getSupportedCustomerActionTitle(), "3");
+        assertEquals(showCustomerRentedCarProcessor.getSupportedCustomerActionTitle(), TEST_SUPPORTED_ACTION_TITLE);
     }
 
     @Test
     public void shouldCheckShowCustomerRentedCarProcessor() {
-        Mockito.when(carServiceMock.getById(1)).thenReturn(createTestCar());
-        Mockito.when(companyServiceMock.getById(1)).thenReturn(createTestCompany());
+        Mockito.when(carServiceMock.getById(TEST_CAR_ID)).thenReturn(createTestCar());
+        Mockito.when(companyServiceMock.getById(TEST_COMPANY_ID)).thenReturn(createTestCompany());
 
         showCustomerRentedCarProcessor.doActionWithCustomer(createTestCustomer());
 
-        Mockito.verify(carServiceMock).getById(1);
-        Mockito.verify(companyServiceMock).getById(1);
+        Mockito.verify(carServiceMock).getById(TEST_CAR_ID);
+        Mockito.verify(companyServiceMock).getById(TEST_COMPANY_ID);
     }
 
     @Test
     public void shouldShowMassageThatCustomerDidNotRentCar() {
-        Mockito.when(carServiceMock.getById(1)).thenReturn(createTestCar());
-        Mockito.when(companyServiceMock.getById(1)).thenReturn(createTestCompany());
+        Mockito.when(carServiceMock.getById(TEST_CAR_ID)).thenReturn(createTestCar());
+        Mockito.when(companyServiceMock.getById(TEST_COMPANY_ID)).thenReturn(createTestCompany());
 
         showCustomerRentedCarProcessor.doActionWithCustomer(createTestCustomerWithoutCar());
 
-        Mockito.verify(carServiceMock, Mockito.times(0)).getById(1);
-        Mockito.verify(companyServiceMock, Mockito.times(0)).getById(1);
+        Mockito.verify(carServiceMock, Mockito.times(0)).getById(TEST_CAR_ID);
+        Mockito.verify(companyServiceMock, Mockito.times(0)).getById(TEST_COMPANY_ID);
     }
 
     private Customer createTestCustomer() {
-        Customer customer = new Customer("Yaroslav");
-        customer.setId(1);
-        customer.setRentedCarId(1);
+        Customer customer = new Customer(TEST_CUSTOMER_NAME);
+        customer.setId(TEST_CUSTOMER_ID);
+        customer.setRentedCarId(TEST_CAR_ID);
         return customer;
     }
 
     private Customer createTestCustomerWithoutCar() {
-        Customer customer = new Customer("Yaroslav");
-        customer.setId(1);
-        customer.setRentedCarId(0);
+        Customer customer = new Customer(TEST_CUSTOMER_NAME);
+        customer.setId(TEST_CUSTOMER_ID);
+        customer.setRentedCarId(null);
         return customer;
     }
 
     private Car createTestCar() {
-        Car car = new Car("BWM", 1);
-        car.setId(1);
+        Car car = new Car(TEST_CAR_NAME, TEST_COMPANY_ID);
+        car.setId(TEST_CAR_ID);
         return car;
     }
 
     private Company createTestCompany() {
-        Company company = new Company("SIXT");
-        company.setId(1);
+        Company company = new Company(TEST_COMPANY_NAME);
+        company.setId(TEST_COMPANY_ID);
         return company;
     }
 }

@@ -19,6 +19,11 @@ import static org.mockito.ArgumentMatchers.isA;
 @MockitoSettings(strictness = Strictness.LENIENT)
 public class ReturnRentedCarProcessorTest {
 
+    private final static String TEST_SUPPORTED_ACTION_TITLE = "2";
+    private final static String TEST_CUSTOMER_NAME = "Yaroslav";
+    private final static int TEST_CUSTOMER_ID = 1;
+    private final static Integer TEST_CUSTOMER_RENTED_CAR_ID = 1;
+
     @Mock
     private ICustomerService customerServiceMock;
     @InjectMocks
@@ -26,7 +31,7 @@ public class ReturnRentedCarProcessorTest {
 
     @Test
     public void shouldReturnSupportedActionTitle() {
-        assertEquals(returnRentedCarProcessor.getSupportedCustomerActionTitle(), "2");
+        assertEquals(returnRentedCarProcessor.getSupportedCustomerActionTitle(), TEST_SUPPORTED_ACTION_TITLE);
     }
 
     @Test
@@ -44,20 +49,20 @@ public class ReturnRentedCarProcessorTest {
     public void shouldShowMassageThatCustomerDidNotRentCar() {
         Mockito.doNothing().when(customerServiceMock).update(isA(Customer.class));
         returnRentedCarProcessor.doActionWithCustomer(createTestCustomerWithoutCar());
-        Mockito.verify(customerServiceMock, Mockito.times(0)).getById(1);
+        Mockito.verify(customerServiceMock, Mockito.times(0)).getById(TEST_CUSTOMER_ID);
     }
 
     private Customer createTestCustomer() {
-        Customer customer = new Customer("Yaroslav");
-        customer.setId(1);
-        customer.setRentedCarId(1);
+        Customer customer = new Customer(TEST_CUSTOMER_NAME);
+        customer.setId(TEST_CUSTOMER_ID);
+        customer.setRentedCarId(TEST_CUSTOMER_RENTED_CAR_ID);
         return customer;
     }
 
     private Customer createTestCustomerWithoutCar() {
-        Customer customer = new Customer("Yaroslav");
-        customer.setId(1);
-        customer.setRentedCarId(0);
+        Customer customer = new Customer(TEST_CUSTOMER_NAME);
+        customer.setId(TEST_CUSTOMER_ID);
+        customer.setRentedCarId(null);
         return customer;
     }
 }

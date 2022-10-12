@@ -20,6 +20,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @MockitoSettings(strictness = Strictness.LENIENT)
 public class ShowCarsListProcessorTest {
 
+    private final static String TEST_SUPPORTED_ACTION_TITLE = "1";
+    private final static String TEST_CAR_NAME = "BMW";
+    private final static int TEST_COMPANY_ID = 1;
     @Mock
     private ICarService carServiceMock;
     @InjectMocks
@@ -27,24 +30,24 @@ public class ShowCarsListProcessorTest {
 
     @Test
     public void shouldReturnSupportedActionTitle() {
-        assertEquals(showCarsListProcessor.getSupportedCarActionTitle(), "1");
+        assertEquals(showCarsListProcessor.getSupportedCarActionTitle(), TEST_SUPPORTED_ACTION_TITLE);
     }
 
     @Test
     public void shouldCheckShowCarsListProcessor() {
-        Mockito.when(carServiceMock.getAllCarsByCompanyId(1)).thenReturn(List.of(createTestCarsList()));
-        showCarsListProcessor.doActionWithCar(1);
-        Mockito.verify(carServiceMock).getAllCarsByCompanyId(1);
+        Mockito.when(carServiceMock.getAllCarsByCompanyId(TEST_COMPANY_ID)).thenReturn(List.of(createTestCarsList()));
+        showCarsListProcessor.doActionWithCar(TEST_COMPANY_ID);
+        Mockito.verify(carServiceMock).getAllCarsByCompanyId(TEST_COMPANY_ID);
     }
 
     @Test
     public void shouldShowMessageThatListEmpty() {
-        Mockito.when(carServiceMock.getAllCarsByCompanyId(1)).thenReturn(new ArrayList<>());
-        showCarsListProcessor.doActionWithCar(1);
-        Mockito.verify(carServiceMock).getAllCarsByCompanyId(1);
+        Mockito.when(carServiceMock.getAllCarsByCompanyId(TEST_COMPANY_ID)).thenReturn(new ArrayList<>());
+        showCarsListProcessor.doActionWithCar(TEST_COMPANY_ID);
+        Mockito.verify(carServiceMock).getAllCarsByCompanyId(TEST_COMPANY_ID);
     }
 
     private Car createTestCarsList() {
-        return new Car("BWM", 1);
+        return new Car(TEST_CAR_NAME, TEST_COMPANY_ID);
     }
 }

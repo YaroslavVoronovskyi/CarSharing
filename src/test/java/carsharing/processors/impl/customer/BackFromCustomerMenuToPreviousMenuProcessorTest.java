@@ -15,16 +15,18 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 @MockitoSettings(strictness = Strictness.LENIENT)
 public class BackFromCustomerMenuToPreviousMenuProcessorTest {
 
+    private final static String TEST_SUPPORTED_ACTION_TITLE = "0";
+    private final static String TEST_CUSTOMER_NAME = "Yaroslav";
     @InjectMocks
     private BackFromCustomerMenuToPreviousMenuProcessor backFromCustomerMenuToPreviousMenuProcessor;
 
     @Test
     public void shouldBackToPreviousMenu() {
-        assertFalse(backFromCustomerMenuToPreviousMenuProcessor.doActionWithCustomer(new Customer("Yaroslav")));
+        assertFalse(backFromCustomerMenuToPreviousMenuProcessor.doActionWithCustomer(new Customer(TEST_CUSTOMER_NAME)));
     }
 
     @Test
     public void shouldReturnSupportedActionTitle() {
-        assertEquals(backFromCustomerMenuToPreviousMenuProcessor.getSupportedCustomerActionTitle(), "0");
+        assertEquals(backFromCustomerMenuToPreviousMenuProcessor.getSupportedCustomerActionTitle(), TEST_SUPPORTED_ACTION_TITLE);
     }
 }

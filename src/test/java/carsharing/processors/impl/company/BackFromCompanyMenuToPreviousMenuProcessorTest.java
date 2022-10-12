@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 @MockitoSettings(strictness = Strictness.LENIENT)
 public class BackFromCompanyMenuToPreviousMenuProcessorTest {
 
+    private final static String TEST_SUPPORTED_ACTION_TITLE = "0";
     @InjectMocks
     private BackFromCompanyMenuToPreviousMenuProcessor backFromCompanyMenuToPreviousMenuProcessor;
 
@@ -24,6 +25,6 @@ public class BackFromCompanyMenuToPreviousMenuProcessorTest {
 
     @Test
     public void shouldReturnSupportedActionTitle() {
-        assertEquals(backFromCompanyMenuToPreviousMenuProcessor.getSupportedCompanyActionTitle(), "0");
+        assertEquals(backFromCompanyMenuToPreviousMenuProcessor.getSupportedCompanyActionTitle(), TEST_SUPPORTED_ACTION_TITLE);
     }
 }

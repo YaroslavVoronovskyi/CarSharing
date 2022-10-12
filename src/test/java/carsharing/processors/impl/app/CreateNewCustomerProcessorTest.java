@@ -22,6 +22,8 @@ import static org.mockito.ArgumentMatchers.isA;
 @MockitoSettings(strictness = Strictness.LENIENT)
 public class CreateNewCustomerProcessorTest {
 
+    private final static String TEST_SUPPORTED_ACTION_TITLE = "3";
+    private final static String TEST_CUSTOMER_NAME = "Yaroslav";
     @Mock
     private ICustomerService customerServiceMock;
     @InjectMocks
@@ -29,7 +31,7 @@ public class CreateNewCustomerProcessorTest {
 
     @Test
     public void shouldReturnSupportedActionTitle() {
-        assertEquals(createNewCustomerProcessor.getSupportedActionTitle(), "3");
+        assertEquals(createNewCustomerProcessor.getSupportedActionTitle(), TEST_SUPPORTED_ACTION_TITLE);
     }
 
     @Test
@@ -37,7 +39,7 @@ public class CreateNewCustomerProcessorTest {
         try (MockedStatic<ConsoleReader> mockStatic = Mockito.mockStatic(ConsoleReader.class)) {
             Mockito.doNothing().when(customerServiceMock).save(isA(Customer.class));
             mockStatic.when(() -> ConsoleReader.getStringFromConsole("Enter the customer name:",
-                    Constants.NAME_CHECK_PATTERN, Constants.WRONG_NAME_FORMAT_ERROR)).thenReturn("Yaroslav");
+                    Constants.NAME_CHECK_PATTERN, Constants.WRONG_NAME_FORMAT_ERROR)).thenReturn(TEST_CUSTOMER_NAME);
 
             createNewCustomerProcessor.doAction();
 

@@ -20,6 +20,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @MockitoSettings(strictness = Strictness.LENIENT)
 public class LoginAsManagerProcessorTest {
 
+    private final static String TEST_SUPPORTED_ACTION_TITLE = "1";
+    private final static String TEST_UNSUPPORTED_ACTION_TITLE = "7";
     @Mock
     private ICompanyProcessorsFactory companyProcessorsFactoryMock;
     @Mock
@@ -29,22 +31,24 @@ public class LoginAsManagerProcessorTest {
 
     @Test
     public void shouldReturnSupportedActionTitle() {
-        assertEquals(loginAsManagerProcessor.getSupportedActionTitle(), "1");
+        assertEquals(loginAsManagerProcessor.getSupportedActionTitle(), TEST_SUPPORTED_ACTION_TITLE);
     }
 
     @Test
     public void shouldCheckLoginAsManagerProcessor() {
         try (MockedStatic<ConsoleReader> mockStatic = Mockito.mockStatic(ConsoleReader.class)) {
-            Mockito.when(companyProcessorsFactoryMock.getCompanyProcessorByAction("1")).thenReturn(companyProcessorMock);
-            mockStatic.when(() -> ConsoleReader.getStringFromConsole(Constants.CORRECT_TITLE_MESSAGE)).thenReturn("1");
+            Mockito.when(companyProcessorsFactoryMock.getCompanyProcessorByAction(TEST_SUPPORTED_ACTION_TITLE))
+                    .thenReturn(companyProcessorMock);
+            mockStatic.when(() -> ConsoleReader.getStringFromConsole(Constants.CORRECT_TITLE_MESSAGE))
+                    .thenReturn(TEST_SUPPORTED_ACTION_TITLE);
             mockStatic.when(() -> ConsoleReader.getStringFromConsole(Constants.COMPANY_PROCESSOR_MENU_MESSAGE))
-                    .thenReturn("7");
+                    .thenReturn(TEST_UNSUPPORTED_ACTION_TITLE);
             Mockito.when(companyProcessorMock.doActionWithCompany()).thenReturn(false);
 
             loginAsManagerProcessor.doAction();
 
             Mockito.verify(companyProcessorMock).doActionWithCompany();
-            Mockito.verify(companyProcessorsFactoryMock).getCompanyProcessorByAction("1");
+            Mockito.verify(companyProcessorsFactoryMock).getCompanyProcessorByAction(TEST_UNSUPPORTED_ACTION_TITLE);
         }
     }
 }

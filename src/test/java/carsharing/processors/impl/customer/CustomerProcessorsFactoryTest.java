@@ -20,15 +20,17 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 @MockitoSettings(strictness = Strictness.LENIENT)
 public class CustomerProcessorsFactoryTest {
 
+    private final static String TEST_SUPPORTED_ACTION_TITLE = "1";
+    private final static String TEST_UNSUPPORTED_ACTION_TITLE = "7";
     @Mock
     private ICustomerProcessor processorMock;
 
     @Test
     public void shouldGetCustomerProcessorByAction() {
-        Mockito.when(processorMock.getSupportedCustomerActionTitle()).thenReturn("testTitle");
+        Mockito.when(processorMock.getSupportedCustomerActionTitle()).thenReturn(TEST_SUPPORTED_ACTION_TITLE);
         ICustomerProcessorsFactory processorsFactory = new CustomerProcessorsFactory(List.of(processorMock));
 
-        ICustomerProcessor processorFromFactory = processorsFactory.getCustomerProcessorByAction("testTitle");
+        ICustomerProcessor processorFromFactory = processorsFactory.getCustomerProcessorByAction(TEST_SUPPORTED_ACTION_TITLE);
 
         assertNotNull(processorFromFactory);
         assertEquals(processorMock, processorFromFactory);
@@ -36,10 +38,10 @@ public class CustomerProcessorsFactoryTest {
 
     @Test
     public void shouldReturnNullIfProcessorNotExists() {
-        Mockito.when(processorMock.getSupportedCustomerActionTitle()).thenReturn("testTitle");
+        Mockito.when(processorMock.getSupportedCustomerActionTitle()).thenReturn(TEST_SUPPORTED_ACTION_TITLE);
         ICustomerProcessorsFactory processorsFactory = new CustomerProcessorsFactory(List.of(processorMock));
 
-        ICustomerProcessor processorFromFactory = processorsFactory.getCustomerProcessorByAction("4");
+        ICustomerProcessor processorFromFactory = processorsFactory.getCustomerProcessorByAction(TEST_UNSUPPORTED_ACTION_TITLE);
 
         assertNull(processorFromFactory);
     }

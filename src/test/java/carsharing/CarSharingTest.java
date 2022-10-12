@@ -16,6 +16,8 @@ import org.mockito.quality.Strictness;
 @MockitoSettings(strictness = Strictness.LENIENT)
 public class CarSharingTest {
 
+    private final static String TEST_SUPPORTED_ACTION_TITLE = "1";
+    private final static String TEST_UNSUPPORTED_ACTION_TITLE = "7";
     @Mock
     private IAppProcessorsFactory appProcessorsFactoryMock;
     @Mock
@@ -26,16 +28,17 @@ public class CarSharingTest {
     @Test
     public void shouldRunCarSharing() {
         try (MockedStatic<ConsoleReader> mockStatic = Mockito.mockStatic(ConsoleReader.class)) {
-            Mockito.when(appProcessorsFactoryMock.getProcessorByAction("1")).thenReturn(appActionProcessorMock);
+            Mockito.when(appProcessorsFactoryMock.getProcessorByAction(TEST_SUPPORTED_ACTION_TITLE))
+                    .thenReturn(appActionProcessorMock);
             Mockito.when(appActionProcessorMock.doAction()).thenReturn(false);
             mockStatic.when(() -> ConsoleReader.getStringFromConsole(Constants.CORRECT_TITLE_MESSAGE))
-                    .thenReturn("1");
+                    .thenReturn(TEST_SUPPORTED_ACTION_TITLE);
             mockStatic.when(() -> ConsoleReader.getStringFromConsole(Constants.APP_PROCESSOR_MESSAGE))
-                    .thenReturn("7");
+                    .thenReturn(TEST_UNSUPPORTED_ACTION_TITLE);
 
             carSharing.runCarSharing();
 
-            Mockito.verify(appProcessorsFactoryMock).getProcessorByAction("1");
+            Mockito.verify(appProcessorsFactoryMock).getProcessorByAction(TEST_SUPPORTED_ACTION_TITLE);
             Mockito.verify(appActionProcessorMock).doAction();
         }
     }

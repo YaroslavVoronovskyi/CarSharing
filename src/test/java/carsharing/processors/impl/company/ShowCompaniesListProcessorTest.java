@@ -25,6 +25,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @MockitoSettings(strictness = Strictness.LENIENT)
 public class ShowCompaniesListProcessorTest {
 
+    private final static String TEST_SUPPORTED_ACTION_TITLE = "1";
+    private final static String TEST_UNSUPPORTED_ACTION_TITLE = "7";
+    private final static String TEST_COMPANY_NAME = "SIXT";
+    private final static int TEST_COMPANY_ID = 1;
+    private final static int MAX_COMPANY_NUMBER = 1;
     @Mock
     private ICompanyService companyServiceMock;
     @Mock
@@ -36,25 +41,28 @@ public class ShowCompaniesListProcessorTest {
 
     @Test
     public void shouldReturnSupportedActionTitle() {
-        assertEquals(showCompaniesListProcessor.getSupportedCompanyActionTitle(), "1");
+        assertEquals(showCompaniesListProcessor.getSupportedCompanyActionTitle(), TEST_SUPPORTED_ACTION_TITLE);
     }
 
     @Test
     public void shouldCheckShowCompaniesListProcessor() {
         try (MockedStatic<ConsoleReader> mockStatic = Mockito.mockStatic(ConsoleReader.class)) {
             Mockito.when(companyServiceMock.getAll()).thenReturn(List.of(createTestCompany()));
-            Mockito.when(carProcessorsFactoryMock.getCarProcessorByAction("1")).thenReturn(carProcessorMock);
+            Mockito.when(carProcessorsFactoryMock.getCarProcessorByAction(TEST_SUPPORTED_ACTION_TITLE))
+                    .thenReturn(carProcessorMock);
             Company company = createTestCompany();
-            mockStatic.when(() -> ConsoleReader.getIntFromConsole(1)).thenReturn(1);
-            mockStatic.when(() -> ConsoleReader.getStringFromConsole(Constants.CORRECT_TITLE_MESSAGE)).thenReturn("1");
+            mockStatic.when(() -> ConsoleReader.getIntFromConsole(MAX_COMPANY_NUMBER)).thenReturn(TEST_COMPANY_ID);
+            mockStatic.when(() -> ConsoleReader.getStringFromConsole(Constants.CORRECT_TITLE_MESSAGE))
+                    .thenReturn(TEST_SUPPORTED_ACTION_TITLE);
             mockStatic.when(() -> ConsoleReader.getStringFromConsole(Constants.QUOTE + company.getName() +
-                    Constants.QUOTE_WITH_COLON + Constants.CAR_PROCESSOR_MENU_MESSAGE)).thenReturn("7");
+                            Constants.QUOTE_WITH_COLON + Constants.CAR_PROCESSOR_MENU_MESSAGE))
+                    .thenReturn(TEST_UNSUPPORTED_ACTION_TITLE);
 
             showCompaniesListProcessor.doActionWithCompany();
 
             Mockito.verify(companyServiceMock).getAll();
-            Mockito.verify(carProcessorMock).doActionWithCar(1);
-            Mockito.verify(carProcessorsFactoryMock).getCarProcessorByAction("1");
+            Mockito.verify(carProcessorMock).doActionWithCar(TEST_COMPANY_ID);
+            Mockito.verify(carProcessorsFactoryMock).getCarProcessorByAction(TEST_SUPPORTED_ACTION_TITLE);
         }
     }
 
@@ -66,8 +74,8 @@ public class ShowCompaniesListProcessorTest {
     }
 
     private Company createTestCompany() {
-        Company company = new Company("SIXT");
-        company.setId(1);
+        Company company = new Company(TEST_COMPANY_NAME);
+        company.setId(TEST_COMPANY_ID);
         return company;
     }
 }

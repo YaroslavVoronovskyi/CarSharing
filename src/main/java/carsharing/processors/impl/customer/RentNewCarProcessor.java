@@ -26,7 +26,7 @@ public class RentNewCarProcessor implements ICustomerProcessor {
 
     @Override
     public boolean doActionWithCustomer(Customer customer) {
-        if (customer.getRentedCarId() > 0) {
+        if (customer.getRentedCarId() != null) {
             System.out.println("You've already rented a car!");
             return true;
         }
